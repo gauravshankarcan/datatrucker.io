@@ -1,0 +1,16 @@
+FROM node:latest
+
+LABEL "datatrucker"="api"
+
+WORKDIR /usr/src/app
+
+COPY ./app .
+RUN npm install && \
+    npm install -g knex
+
+RUN chgrp -R 0 /usr/src/app && \
+    chmod -R g=u /usr/src/app
+
+EXPOSE 8080
+ENTRYPOINT ["npm","run"]
+CMD [ "start" ]

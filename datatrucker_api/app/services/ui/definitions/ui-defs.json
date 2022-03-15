@@ -1,0 +1,80 @@
+{
+            "Database API": {
+                  "Postgres APIs": {
+                        "redirect": "/db/postgres"
+                  },
+                  "MySQL APIs": {
+                        "redirect": "/db/mysql"
+                  },
+                  "MSSQL APIs": {
+                        "redirect": "/db/mssql"
+                  },
+                  "Oracle APIs": {
+                        "redirect": "/db/oracle"
+                  },
+                  "Sqllite APIs": {
+                        "redirect": "/db/sqllite"
+                  },
+                  "MariaDB APIs": {
+                        "redirect": "/db/maria"
+                  },
+                  "OPTIONS": {
+                        "ico": "StorageRoundedIcon"
+                  }
+            },
+            "File API": {
+                  "SFTP APIs": {
+                        "redirect": "/file/sftp"
+                  },
+                  "OPTIONS": {
+                        "ico": "FileCopyRoundedIcon"
+                  }
+            },
+            "IOT API": {
+                  "Redis APIs": {
+                        "redirect": "/iot/redis"
+                  },
+                  "Kafka": {
+                        "redirect": "/iot/kafka"
+                  },
+                  "OPTIONS": {
+                        "ico": "CloudCircleOutlinedIcon"
+                  }
+            },
+            "Util API": {
+                  "FuzzySearch APIs": {
+                        "redirect": "/utils/fuzzy"
+                  },
+                  "Sentiment APIs": {
+                        "redirect": "/utils/sentiment"
+                  },
+                  "Echo APIs": {
+                        "redirect": "/utils/echo"
+                  },
+                  "OPTIONS": {
+                        "ico": "EmojiObjectsOutlinedIcon"
+                  }
+            },
+            "Script API": {
+                  "SSH APIs": {
+                        "redirect": "/script/sshscript"
+                  },
+                  "JS APIs": {
+                        "redirect": "/script/jsscript"
+                  },
+                  "Shell APIs": {
+                        "redirect": "/script/shell"
+                  },
+                  "OPTIONS": {
+                        "ico": "DeveloperModeOutlinedIcon"
+                  }
+            },
+            "Build Chains": {
+                  "Chains APIs": {
+                        "redirect": "/chains"
+                  },
+                  "OPTIONS": {
+                        "ico": "AllInclusiveOutlinedIcon"
+                  }
+            }
+}

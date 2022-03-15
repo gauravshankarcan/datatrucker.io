@@ -1,0 +1,21 @@
+{
+            "Users": {
+                  "Manage Users": {
+                        "redirect": "/users"
+                  },
+                  "OPTIONS": {
+                        "ico": "PersonIcon"
+                  }
+            },
+            "Groups": {
+                  "Manage Groups": {
+                        "redirect": "/groups"
+                  },
+                  "User Mapping": {
+                        "redirect": "/user-mapping"
+                  },
+                  "OPTIONS": {
+                        "ico": "GroupIcon"
+                  }
+            }
+}

@@ -1,0 +1,100 @@
+{
+      "/users": {
+            "trucker-page-searchbox": "Username",
+            "trucker-page-title": "Manager Users",
+            "trucker-page-info": "Get List of user / Create,Modify,Delete Users ",
+            "trucker-page-searchtableheading": "Get List of users",
+            "trucker-page-createtableheading": "User Management",
+            "searchapi": "users?",
+            "createapi": "users",
+            "updateapi": "users",
+            "deleteapi": "users",
+            "searchid": "username",
+            "updateid": "username",
+            "deleteid": "username",
+            "DocuLink": "https://www.datatrucker.io/",
+            "searchcolumns": [
+                  {
+                        "field": "id",
+                        "title": "ID"
+                  },
+                  {
+                        "field": "username",
+                        "title": "User Name"
+                  },
+                  {
+                        "field": "emailid",
+                        "title": "Email Id"
+                  },
+                  {
+                        "field": "enabled",
+                        "title": "Enabled"
+                  }
+            ],
+            "create": [
+                  {
+                        "field": "username",
+                        "placeholder": "User Name",
+                        "type": "text",
+                        "locked": false
+                  },
+                  {
+                        "field": "password",
+                        "placeholder": "Password",
+                        "type": "password",
+                        "locked": false
+                  },
+                  {
+                        "field": "emailid",
+                        "placeholder": "Email Id",
+                        "type": "text",
+                        "locked": false
+                  },
+                  {
+                        "field": "enabled",
+                        "placeholder": "Enabled",
+                        "type": "boolean",
+                        "locked": false,
+                        "defaultValue": true
+                  },
+                  {
+                        "field": "asset",
+                        "placeholder": "Asset Info",
+                        "type": "textarea",
+                        "locked": false
+                  }
+            ],
+            "update": [
+                  {
+                        "field": "username",
+                        "placeholder": "User Name",
+                        "type": "text",
+                        "locked": true
+                  },
+                  {
+                        "field": "password",
+                        "placeholder": "Password (mandatory) on change",
+                        "type": "password",
+                        "locked": false
+                  },
+                  {
+                        "field": "emailid",
+                        "placeholder": "Email Id",
+                        "type": "text",
+                        "locked": false
+                  },
+                  {
+                        "field": "enabled",
+                        "placeholder": "Enabled",
+                        "type": "boolean",
+                        "locked": false
+                  },
+                  {
+                        "field": "asset",
+                        "placeholder": "Asset Info",
+                        "type": "textarea",
+                        "locked": false
+                  }
+            ]
+      }
+}

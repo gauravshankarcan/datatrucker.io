@@ -1,0 +1,222 @@
+{
+      "/utils/fuzzy": {
+            "trucker-page-title": "Create Fuzzy Search  API",
+            "trucker-page-createtableheading": "Create an Fuzzy Search API",
+            "createapi": "resources",
+            "deleteapi": "resources",
+            "deleteid": "filename",
+            "searchapi": "resources?type=Util-Fuzzy",
+            "getapi": "resources",
+            "searchcolumns": [
+                  {
+                        "field": "restmethod",
+                        "title": "Method"
+                  },
+                  {
+                        "field": "tenant",
+                        "title": "Tenant"
+                  },
+                  {
+                        "field": "resourcename",
+                        "title": "Resource Name"
+                  },
+                  {
+                        "field": "filename",
+                        "title": "Filename"
+                  }
+            ],
+            "create": [
+                  {
+                        "field": "resourcename",
+                        "placeholder": "Resource Name",
+                        "type": "text",
+                        "locked": false
+                  },
+                  {
+                        "field": "restmethod",
+                        "placeholder": "Method",
+                        "type": "dropdown",
+                        "locked": false,
+                        "values": ["GET", "POST", "PUT", "DELETE", "PATCH"],
+                        "defaultValue": "POST"
+                  },
+                  {
+                        "field": "type",
+                        "placeholder": "Type",
+                        "type": "text",
+                        "locked": true,
+                        "defaultValue": "Util-Fuzzy"
+                  },
+                  {
+                        "field": "options",
+                        "placeholder": "Options",
+                        "type": "jsonarea",
+                        "locked": false,
+                        "defaultValue": {
+                              "keys": ["author"]
+                        }
+                  },
+                  {
+                        "field": "validations",
+                        "placeholder": "Validations",
+                        "type": "jsonarea",
+                        "locked": false,
+                        "defaultValue": {
+                              "type": "object",
+                              "properties": {
+                                    "key": {
+                                          "type": "string",
+                                          "pattern": "^[a-z0-9]*$",
+                                          "maxLength": 5
+                                    }
+                              }
+                        }
+                  }
+            ]
+      },
+      "/utils/echo": {
+            "trucker-page-title": "Create Echo  API",
+            "trucker-page-createtableheading": "Create Echo API",
+            "createapi": "resources",
+            "deleteapi": "resources",
+            "deleteid": "filename",
+            "searchapi": "resources?type=Util-Echo",
+            "getapi": "resources",
+            "searchcolumns": [
+                  {
+                        "field": "restmethod",
+                        "title": "Method"
+                  },
+                  {
+                        "field": "tenant",
+                        "title": "Tenant"
+                  },
+                  {
+                        "field": "resourcename",
+                        "title": "Resource Name"
+                  },
+                  {
+                        "field": "filename",
+                        "title": "Filename"
+                  }
+            ],
+            "create": [
+                  {
+                        "field": "resourcename",
+                        "placeholder": "Resource Name",
+                        "type": "text",
+                        "locked": false
+                  },
+                  {
+                        "field": "restmethod",
+                        "placeholder": "Method",
+                        "type": "dropdown",
+                        "locked": false,
+                        "values": ["GET", "POST", "PUT", "DELETE", "PATCH"],
+                        "defaultValue": "POST"
+                  },
+                  {
+                        "field": "type",
+                        "placeholder": "Type",
+                        "type": "text",
+                        "locked": true,
+                        "defaultValue": "Util-Echo"
+                  },
+                  {
+                        "field": "validations",
+                        "placeholder": "Validations",
+                        "type": "jsonarea",
+                        "locked": false,
+                        "defaultValue": {
+                              "type": "object",
+                              "properties": {
+                                  "voila": {
+                                      "type": "string",
+                                      "enum": ["true","false"]
+                                  }
+                              }
+                          }
+                  }
+            ]
+      },
+      "/utils/sentiment": {
+            "trucker-page-title": "Create Sentiment API",
+            "trucker-page-createtableheading": "Create and train an API to Capture Sentiment of a message",
+            "createapi": "resources",
+            "deleteapi": "resources",
+            "deleteid": "filename",
+            "searchapi": "resources?type=Util-Sentiment",
+            "getapi": "resources",
+            "searchcolumns": [
+                  {
+                        "field": "restmethod",
+                        "title": "Method"
+                  },
+                  {
+                        "field": "tenant",
+                        "title": "Tenant"
+                  },
+                  {
+                        "field": "resourcename",
+                        "title": "Resource Name"
+                  },
+                  {
+                        "field": "filename",
+                        "title": "Filename"
+                  }
+            ],
+            "create": [
+                  {
+                        "field": "resourcename",
+                        "placeholder": "Resource Name",
+                        "type": "text",
+                        "locked": false
+                  },
+                  {
+                        "field": "restmethod",
+                        "placeholder": "Method",
+                        "type": "dropdown",
+                        "locked": false,
+                        "values": ["GET", "POST", "PUT", "DELETE", "PATCH"],
+                        "defaultValue": "POST"
+                  },
+                  {
+                        "field": "type",
+                        "placeholder": "Type",
+                        "type": "text",
+                        "locked": true,
+                        "defaultValue": "Util-Sentiment"
+                  },
+                  {
+                        "field": "options",
+                        "placeholder": "Options",
+                        "type": "jsonarea",
+                        "locked": false,
+                        "defaultValue": {
+                                    "extras": {
+                                          "cats": 5,
+                                          "amazing": 2,
+                                          "tasteless": -10,
+                                          "Wanted": 10
+                                    }
+                        }
+                  },
+                  {
+                        "field": "validations",
+                        "placeholder": "Validations",
+                        "type": "jsonarea",
+                        "locked": false,
+                        "defaultValue": {
+                              "type": "object",
+                              "properties": {
+                                    "statement": {
+                                          "type": "string",
+                                          "pattern": "^[ A-za-z0-9]*$",
+                                          "maxLength": 50
+                                    }
+                              }
+                        }
+                  }
+            ]
+      }
+}

@@ -1,0 +1,15 @@
+FROM node:latest
+
+LABEL "datatrucker"="ui"
+
+WORKDIR /usr/src/app
+
+COPY ./app .
+RUN npm install
+RUN npm run build
+
+RUN chgrp -R 0 /usr/src/app && \
+    chmod -R g=u /usr/src/app
+
+EXPOSE 9080
+CMD [ "node", "server.js" ]

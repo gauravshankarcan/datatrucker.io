@@ -1,0 +1,54 @@
+#
+# Copyright 2021 Datatrucker.io Inc , Ontario , Canada
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+apiVersion: datatrucker.datatrucker.io/v1
+kind: DatatruckerFlow
+metadata:
+  name: datatruckerflow-sample
+spec:
+  Resources:
+    requests:
+      memory: "256Mi"
+      cpu: "250m"
+    limits:
+      memory: "256Mi"
+      cpu: "500m"
+  JobDefinitions:
+  - name: echoapi
+    type: Util-Echo
+    tenant: Admin
+    restmethod: GET
+    validations:
+      type: object
+      properties:
+        voila:
+            type: string
+            enum:
+            - 'true'
+            - 'false' 
+  Keys:
+    configmap: placeholder
+  Scripts:
+    configmap: placeholder
+  Type: Job  
+  DatatruckerConfig: datatruckerconfig-sample  
+  Replicas: 1 
+  API:
+    name: api
+    Image:
+      repository: registry.gitlab.com/datatruckerio
+      imageName: datatrucker-server/datatrucker-api
+      imageNameUI: datatruckerio/datatrucker-ui
+      tagName: latest

@@ -10,11 +10,15 @@ jobs:
   initiate-testing:
     name: Wait for services to come up and the run migrate
     runs-on: ubuntu-18.04
+    strategy:
+     matrix:
+      app: [datatrucker_api,datatrucker_ui]
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v2
         with:
           node-version: 16
       - name: Install Dependencies
-        run: npm install    
-      - run: npm audit
+        run: cd ${{matrix.app}}/app ; npm install    
+      - name: Audit Dependencies
+        run: cd ${{matrix.app}}/app ; npm audit

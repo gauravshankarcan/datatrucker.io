@@ -1,0 +1,32 @@
+{
+      "passwordHash": {
+            "Algorithm": "sha256",
+            "SaltLength": 16
+      },
+      "JWT": {
+            "signOptions": {
+                  "expiresIn": "60m",
+                  "algorithm": "RS256",
+                  "issuer": "datatrucker"
+            },
+            "verify": {
+                  "issuer": "datatrucker"
+            },
+            "authorization_keys": {
+                  "public_key": "public-JWT_unsecured.key",
+                  "private_key": "private-JWT_unsecured.key"
+            }
+      },
+      "CredentailEncryption": {
+            "IV": "eThWmZq4t7w!z$C&",
+            "Key": "JaNdRgUkXp2s5u8x/A?D(G+KbPeShVmY",
+            "Algorithm": "aes-256-cbc"
+      },
+      "keycloak": {            
+            "realm" : "trucker",
+            "client_id": "node-js",  
+            "url": "http://localhost:28080",
+            "client_secret": "add3292d-fc0f-4220-845c-dce5eae100c6",
+            "jwt_publickey_verifier" : "keycloak_unsecured.key"
+      }
+}

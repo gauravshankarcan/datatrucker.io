@@ -1,0 +1,68 @@
+{
+      "/chains": {
+            "trucker-page-title": "Create A Chain",
+            "trucker-page-info": "Build Chains (Advanced)",
+            "trucker-page-searchtableheading": "Get List of All APIs Stored",
+            "trucker-page-createtableheading": "Connect Multiple APIs to a single chain (Advanced)",
+            "createapi": "resources",
+            "deleteapi": "resources",
+            "deleteid": "filename",
+            "getapi": "resources",
+            "searchapi": "resources?type=Chain",
+            "searchcolumns": [
+                  {
+                        "field": "restmethod",
+                        "title": "Method"
+                  },
+                  {
+                        "field": "tenant",
+                        "title": "Tenant"
+                  },
+                  {
+                        "field": "resourcename",
+                        "title": "Resource Name"
+                  },
+                  {
+                        "field": "filename",
+                        "title": "Filename"
+                  }
+            ],
+            "create": [
+                  {"field": "resourcename", "placeholder": "Resource Name", "type": "text", "locked": false},
+                  {"field": "restmethod", "placeholder": "Method", "type": "dropdown", "locked": false, "values": ["GET", "POST", "PUT", "DELETE", "PATCH"],
+                        "defaultValue": "GET"},
+                  {
+                        "field": "chain",
+                        "placeholder": "Chain Definition",
+                        "type": "jsonarea",
+                        "locked": false,
+                        "defaultValue": [
+                              {
+                                "stub": "sentiment2",
+                                "method": "POST",
+                                "datacontent": {
+                                  "statement": "$.0.msg"
+                                }
+                              },
+                              {
+                                "stub": "jsscript1",
+                                "method": "PUT",
+                                "datacontent": {
+                                  "number": "$.1.score"
+                                }
+                              },
+                              {
+                                "stub": "echo1",
+                                "method": "GET",
+                                "datacontent": {
+                                  "message": "$.0.msg",
+                                  "score": "$.1.score",
+                                  "scorecube": "$.2"
+                                }
+                              }
+                        ]
+                  },
+                  {"field": "type", "placeholder": "Type", "type": "text", "locked": true, "defaultValue": "Chain"}
+            ]
+      }
+}

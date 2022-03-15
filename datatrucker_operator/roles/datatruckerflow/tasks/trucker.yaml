@@ -1,0 +1,169 @@
+#
+# Copyright 2021 Datatrucker.io Inc , Ontario , Canada
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+- set_fact:
+    serverconfigmap: "{{ DatatruckerConfig }}-login-config"
+  when: Type == 'Login'  
+
+- set_fact:
+    serverconfigmap: "{{ DatatruckerConfig }}-management-config"
+  when: Type == 'Management'  
+
+- set_fact:
+    serverconfigmap: "{{ DatatruckerConfig }}-jobs-config"
+  when: Type == 'Job'  
+
+- meta: end_play
+  when: serverconfigmap is not defined
+
+- set_fact:
+    json_files:
+      placeholder: "dummy"
+
+- set_fact:
+    json_files: "{{ json_files | default({}) | combine({ item.restmethod+'-'+item.tenant+'-'+item.name+'.json': item | to_json  })}}"
+  with_items: "{{JobDefinitions}} "
+
+- name: create a jobs-config
+  community.kubernetes.k8s:
+    state: present
+    definition: 
+      apiVersion: v1
+      kind: ConfigMap
+      metadata:
+        name: '{{ ansible_operator_meta.name }}-job'
+        namespace: '{{ ansible_operator_meta.namespace }}'
+      data: '{{ json_files }}'
+
+
+
+- name: create a jobs deployment
+  community.kubernetes.k8s:
+    state: present
+    definition:
+        kind: Deployment
+        apiVersion: apps/v1
+        metadata:
+          name: '{{ ansible_operator_meta.name }}-job'
+          namespace: '{{ ansible_operator_meta.namespace }}'
+          labels:
+            name: '{{ ansible_operator_meta.name }}'
+            namespace: '{{ ansible_operator_meta.namespace }}'
+            cleanup: trucker
+            function: login
+        spec:
+          replicas: '{{ Replicas  }}'
+          selector:
+            matchLabels:
+              name: '{{ ansible_operator_meta.name }}'
+              namespace: '{{ ansible_operator_meta.namespace }}'
+          template:
+            metadata:
+              labels:
+                name: '{{ ansible_operator_meta.name }}'
+                namespace: '{{ ansible_operator_meta.namespace }}'
+            spec:
+              initContainers:  
+              - name: datatrucker-api-init
+                image: "{{ API.Image.repository }}/{{ API.Image.imageName }}:{{ API.Image.tagName }}"
+                volumeMounts:
+                - name: config-volume
+                  mountPath: /usr/src/app/config       
+                  readOnly: true
+                command: ['npm', 'run', 'migrate'] 
+              containers:
+              - name: datatrucker-api
+                resources: '{{ Resources }}'
+                image: "{{ API.Image.repository }}/{{ API.Image.imageName }}:{{ API.Image.tagName }}"
+                volumeMounts:
+                - name: config-volume
+                  mountPath: /usr/src/app/config    
+                  readOnly: true
+                - name: jobs-volume
+                  mountPath: /usr/src/app/resourcedefinitions       
+                  readOnly: true
+                - name: keys-volume
+                  mountPath: /usr/src/app/keys       
+                  readOnly: true
+                - name: scripts-volume
+                  mountPath: /usr/src/app/scripts       
+                  readOnly: true
+                readinessProbe:
+                  httpGet:
+                    path: /api/v1/statuschecks/healthcheck
+                    port: 8080
+                    initialDelaySeconds: 10
+                    timeoutSeconds: 1
+                livenessProbe:
+                  httpGet:
+                    path: /api/v1/statuschecks/healthcheck
+                    port: 8080
+                    initialDelaySeconds: 10
+                    timeoutSeconds: 1
+                ports:
+                - containerPort: 8080
+                  protocol: TCP
+                imagePullPolicy: Always
+              restartPolicy: Always
+              terminationGracePeriodSeconds: 62
+              dnsPolicy: ClusterFirst
+              volumes:
+              - name: config-volume
+                secret:
+                  secretName: "{{ serverconfigmap }}"
+              - name: jobs-volume
+                configMap:
+                  name: "{{ ansible_operator_meta.name }}-job"    
+              - name: keys-volume
+                configMap:
+                  name: "{{ Keys.configmap }}"         
+              - name: scripts-volume
+                configMap:
+                  name: "{{ Scripts.configmap }}"       
+          strategy:
+            type: RollingUpdate
+            rollingUpdate:
+              maxUnavailable: 1
+              maxSurge: 1        
+
+
+
+- set_fact:
+    JOBSERVICEENTRY: |
+      kind: Service
+      apiVersion: v1
+      metadata:
+        name: '{{ ansible_operator_meta.name }}'
+        namespace: '{{ ansible_operator_meta.namespace }}'
+        labels:
+          name: db
+          cleanup: trucker
+      spec:
+        ports:
+        - protocol: TCP
+          port: 80
+          targetPort: 8080
+        selector:
+          name: '{{ ansible_operator_meta.name }}'
+          namespace: '{{ ansible_operator_meta.namespace }}'
+        type: ClusterIP
+        sessionAffinity: None   
+
+
+- name: create a service
+  community.kubernetes.k8s:
+    state: present
+    definition: "{{ JOBSERVICEENTRY | from_yaml }}"
+ 

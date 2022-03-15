@@ -1,0 +1,87 @@
+{
+      "/file/sftp": {
+            "trucker-page-title": "Create SFTP API",
+            "trucker-page-createtableheading": "Create a SFTP to upload/download a file or a folder",
+            "createapi": "resources",
+            "deleteapi": "resources",
+            "deleteid": "filename",
+            "searchapi": "resources?type=File-SFTP",
+            "getapi": "resources",
+            "searchcolumns": [
+                  {
+                        "field": "restmethod",
+                        "title": "Method"
+                  },
+                  {
+                        "field": "tenant",
+                        "title": "Tenant"
+                  },
+                  {
+                        "field": "resourcename",
+                        "title": "Resource Name"
+                  },
+                  {
+                        "field": "filename",
+                        "title": "Filename"
+                  }
+            ],
+            "create": [
+                  {
+                        "field": "resourcename",
+                        "placeholder": "Resource Name",
+                        "type": "text",
+                        "locked": false
+                  },
+                  {
+                        "field": "credentialname",
+                        "placeholder": "Credential Name",
+                        "type": "text",
+                        "locked": false
+                  },
+                  {
+                        "field": "restmethod",
+                        "placeholder": "Method",
+                        "type": "dropdown",
+                        "locked": false,
+                        "values": ["GET", "POST", "PUT", "DELETE", "PATCH"],
+                        "defaultValue": "POST"
+                  },
+                  {
+                        "field": "source",
+                        "placeholder": "SFTP Flow",
+                        "type": "dropdown",
+                        "locked": false,
+                        "values": ["upload", "download"],
+                        "defaultValue": "upload"
+                  },
+                  {
+                        "field": "source_path",
+                        "placeholder": "Source Location",
+                        "type": "text",
+                        "locked": false,
+                        "defaultValue": "/home/username/testscript.js"
+                  },
+                  {
+                        "field": "source_type",
+                        "placeholder": "Source Type",
+                        "type": "dropdown",
+                        "locked": false,
+                        "values": ["file", "folder"],
+                        "defaultValue": "file"
+                  },
+                  {
+                        "field": "target_path",
+                        "placeholder": "Target",
+                        "type": "text",
+                        "locked": false
+                  },
+                  {
+                        "field": "type",
+                        "placeholder": "Type",
+                        "type": "text",
+                        "locked": true,
+                        "defaultValue": "File-SFTP"
+                  }
+            ]
+      }
+}
