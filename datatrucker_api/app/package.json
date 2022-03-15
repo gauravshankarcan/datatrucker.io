@@ -57,7 +57,7 @@
             "redis": "^3.1.2",
             "sentiment": "^5.0.2",
             "shelljs": "^0.8.4",
-            "sqlite3": "^5.0.2",
+            "sqlite3": "npm:@louislam/sqlite3@^6.0.1",
             "ssh2-sftp-client": "^7.0.3"
       },
       "devDependencies": {

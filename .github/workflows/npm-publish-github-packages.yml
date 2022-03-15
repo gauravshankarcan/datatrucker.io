@@ -19,6 +19,6 @@ jobs:
         with:
           node-version: 16
       - name: Install Dependencies
-        run: cd ${{matrix.app}}/app ; npm install    
+        run: cd ${{matrix.app}}/app ; yarn install    
       - name: Audit Dependencies
-        run: cd ${{matrix.app}}/app ; npm audit
+        run: cd ${{matrix.app}}/app ; yarn audit
