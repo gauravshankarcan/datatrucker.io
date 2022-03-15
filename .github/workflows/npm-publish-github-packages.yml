@@ -24,7 +24,7 @@ jobs:
           password: ${{ secrets.DOCKERPASS }}
 
       - name: provide execute permissions 
-        run: chmod +x /ci/docker-setup.sh
+        run: chmod +x ./ci/docker-setup.sh
 
 
       - name: bring up containers
