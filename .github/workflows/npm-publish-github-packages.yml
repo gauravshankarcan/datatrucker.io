@@ -11,22 +11,29 @@ jobs:
     name: Wait for services to come up and the run migrate
     runs-on: ubuntu-18.04
 
-    services:
-      postgres:
-        image: docker.io/crunchydata/crunchy-postgres:centos7-12.1-4.2.1
-        env:
-          MAX_CONNECTIONS: 800
-          PG_MODE: "primary"
-          PG_USER: "testuser"
-          PG_PASSWORD: password
-          PG_DATABASE: userdb
-          PG_PRIMARY_USER: primaryuser
-          PG_PRIMARY_PORT: 5432
-          PG_PRIMARY_PASSWORD: password
-          PG_ROOT_PASSWORD: password
-          PGHOST: /tmp
-        ports:
-          - 5432:5432
+    # services:
+    #   postgres:
+    #     image: docker.io/crunchydata/crunchy-postgres:centos7-12.1-4.2.1
+    #     env:
+    #       MAX_CONNECTIONS: 800
+    #       PG_MODE: "primary"
+    #       PG_USER: "testuser"
+    #       PG_PASSWORD: password
+    #       PG_DATABASE: userdb
+    #       PG_PRIMARY_USER: primaryuser
+    #       PG_PRIMARY_PORT: 5432
+    #       PG_PRIMARY_PASSWORD: password
+    #       PG_ROOT_PASSWORD: password
+    #       PGHOST: /tmp
+    #     ports:
+    #       - 5432:5432
+    #   mssql:
+    #     image: mcr.microsoft.com/mssql/server:2017-CU19-ubuntu-16.04
+    #     env:
+    #       ACCEPT_EULA: Y
+    #       SA_PASSWORD: SpikePrototype2016!
+    #     ports:
+    #     - 1433:1433
 
 
 
@@ -37,6 +44,8 @@ jobs:
         with:
           node-version: 16
       - name: Install Dependencies
-        run: cd datatrucker_api/app ; yarn install    
-      - name: Audit Dependencies
-        run: cd datatrucker_api/app ; yarn audit
+        run: docker container ls    
+      # - name: Install Dependencies
+      #   run: cd datatrucker_api/app ; yarn install    
+      # - name: Audit Dependencies
+      #   run: cd datatrucker_api/app ; yarn audit
