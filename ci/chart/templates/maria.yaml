@@ -1,0 +1,36 @@
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: maria
+  labels:
+    name: maria
+spec:
+  containers:
+  - name: maria
+    image: docker.io/mariadb:latest
+    ports:
+    - containerPort: 3306
+    env:
+    - name: MARIADB_ROOT_PASSWORD
+      value: "password"
+    - name: MARIADB_DATABASE
+      value: primary
+    - name: MARIADB_USER
+      value: sa
+    - name: MARIADB_PASSWORD
+      value: password
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: maria
+spec:
+  type: NodePort
+  selector:
+    name: maria
+  ports:
+    - port: 3306
+      targetPort: 3306
+      nodePort: 30004

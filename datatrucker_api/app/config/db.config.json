@@ -1,7 +1,7 @@
 {
       "type": "pg",
-      "host": "localhost",
-      "port": 5432,
+      "host": "192.168.49.2",
+      "port": 30001,
       "username": "testuser",
       "password": "password",
       "database": "userdb",

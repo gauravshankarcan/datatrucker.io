@@ -1,0 +1,27 @@
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: ssh
+  labels:
+    name: ssh
+spec:
+  containers:
+  - name: ssh
+    image: rastasheep/ubuntu-sshd:14.04
+    ports:
+    - containerPort: 22
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ssh
+spec:
+  type: NodePort
+  selector:
+    name: ssh
+  ports:
+    - port: 22
+      targetPort: 22
+      nodePort: 30008

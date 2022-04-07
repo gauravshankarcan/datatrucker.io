@@ -1,0 +1,45 @@
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: authorized-keys
+data:
+  authorized_keys: >-
+    c3NoLWVkMjU1MTkgQUFBQUMzTnphQzFsWkRJMU5URTVBQUFBSUdzYUlxV0RvN1duczd5L01wSzZsS1ZXK1JyNFV2bjI1QlZiMUlXOHY2WWEgc3VwcG9ydEBkYXRhdHJ1Y2tlci5pbw==
+type: Opaque
+
+
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: ssh-private
+  labels:
+    name: ssh-private
+spec:
+  containers:
+  - name: ssh-private
+    image: docker.io/rastasheep/ubuntu-sshd:14.04
+    ports:
+    - containerPort: 22
+    volumeMounts:
+    - mountPath: "/root/.ssh/"
+      name: ssh-key
+      readOnly: true
+  volumes:  
+  - name: ssh-key
+    secret:
+      secretName: authorized-keys
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ssh-private
+spec:
+  type: NodePort
+  selector:
+    name: ssh-private
+  ports:
+    - port: 22
+      targetPort: 22
+      nodePort: 30009

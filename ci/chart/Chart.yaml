@@ -1,0 +1,10 @@
+apiVersion: v1
+name: DataTrucker developer env build
+version: v1
+keywords:
+  - datatrucker
+maintainers: # (optional)
+  - name: Gaurav Shankar
+    email: gauravshankar.can@gmail.com
+    url: https://github.com/gauravshankarcan/datatrucker.io
+    

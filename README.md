@@ -29,3 +29,6 @@ https://www.youtube.com/watch?v=OKu4YNZhPwg
 If you are on kubernetes, this get even simpler via an operator watch the video below
 
 https://youtu.be/DKLFDqhjs5M
+
+## Contributing guide
+See File CONTRIBUTE.md
