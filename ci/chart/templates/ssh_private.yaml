@@ -5,7 +5,7 @@ metadata:
   name: authorized-keys
 data:
   authorized_keys: >-
-    c3NoLWVkMjU1MTkgQUFBQUMzTnphQzFsWkRJMU5URTVBQUFBSUdzYUlxV0RvN1duczd5L01wSzZsS1ZXK1JyNFV2bjI1QlZiMUlXOHY2WWEgc3VwcG9ydEBkYXRhdHJ1Y2tlci5pbw==
+    c3NoLWVkMjU1MTkgQUFBQUMzTnphQzFsWkRJMU5URTVBQUFBSUdzYUlxV0RvN1duczd5L01wSzZsS1ZXK1JyNFV2bjI1QlZiMUlXOHY2WWEgc3VwcG9ydEBkYXRhdHJ1Y2tlci5pbwo=
 type: Opaque
 
 
