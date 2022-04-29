@@ -16,7 +16,7 @@
 
 
 import React, {Component} from 'react';
-import {Redirect} from 'react-router-dom';
+import {Navigate} from 'react-router-dom';
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -166,10 +166,10 @@ class Login extends Component {
       render() {
             const {classes} = this.props;
             if (this.state.redirectreg) {
-                  return <Redirect to="/register" />;
+                  return <Navigate to="/register" />;
             }
             if (this.state.redirect) {
-                 return <Redirect to="/home" />;
+                 return <Navigate to="/home" />;
             } 
             else {
                   return (

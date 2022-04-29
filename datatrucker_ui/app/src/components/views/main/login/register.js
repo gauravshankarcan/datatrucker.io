@@ -15,7 +15,7 @@
 */ 
 
 import React, {Component} from 'react';
-import {Redirect} from 'react-router-dom';
+import {Navigate} from 'react-router-dom';
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -108,7 +108,7 @@ class Register extends Component {
       render() {
             const {classes} = this.props;
             if (this.state.redirect) {
-                  return <Redirect to="/login" />;
+                  return <Navigate to="/login" />;
             } else if (!this.state.execute) {
                   return <h6>...verifying server setup with backend</h6>;
             } else {

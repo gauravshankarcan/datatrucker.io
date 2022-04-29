@@ -30,7 +30,7 @@ module.exports = fp(async (f, opts, done) => {
             const path = `${appRoot}/${configdef.Templates.Scripts}/${location}`;
             // eslint-disable-next-line global-require
             const remotefile = require(path);
-            const remoteHandle = await remotefile.runHandle(request.datacontent);
+            const remoteHandle = await remotefile.runHandle(request.datacontent,request);
 
             return remoteHandle;
       }

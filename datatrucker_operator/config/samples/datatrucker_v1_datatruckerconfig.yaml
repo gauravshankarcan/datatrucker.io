@@ -125,6 +125,7 @@ spec:
         ScriptShell: false
         ScriptSSH: false
         ScriptJS: false
+        IOTProxy: false
         Login: true
     
     managementServer: 

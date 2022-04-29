@@ -2,10 +2,14 @@ domain: datatrucker.io
 layout: ansible.sdk.operatorframework.io/v1
 projectName: datatrucker-operator
 resources:
-- group: datatrucker
+-
+  domain: datatrucker.io
+  group: datatrucker
   kind: DatatruckerConfig
   version: v1
-- group: datatrucker
+-
+  domain: datatrucker.io
+  group: datatrucker
   kind: DatatruckerFlow
   version: v1
-version: 3-alpha
+version: "3"

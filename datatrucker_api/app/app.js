@@ -23,6 +23,7 @@ const server = require('./config/server.config.json');
 const fastifyprops = {
       logger: server.fastify.logger,
       http2: server.protocol.http2,
+      requestTimeout: server.fastify.requestTimeout,
       ignoreTrailingSlash: server.fastify.ignoreTrailingSlash,
       ajv: {
             customOptions: server.ajv.customOptions
@@ -82,10 +83,13 @@ if (f.serverconfig.pluginsEnable.UtilFuzzy) { f.register(require('./plugins/Util
 if (f.serverconfig.pluginsEnable.UtilEcho) { f.register(require('./plugins/Util-Echo'), {}); }
 if (f.serverconfig.pluginsEnable.IOTRedis) { f.register(require('./plugins/IOT-Redis'), {}); }
 if (f.serverconfig.pluginsEnable.IOTKafka) { f.register(require('./plugins/IOT-Kafka'), {}); }
+if (f.serverconfig.pluginsEnable.IOTProxy) { f.register(require('./plugins/IOT-Proxy'), {}); }
 if (f.serverconfig.pluginsEnable.FileSFTP) { f.register(require('./plugins/File-SFTP'), {}); }
 if (f.serverconfig.pluginsEnable.ScriptShell) { f.register(require('./plugins/Script-Shell'), {}); }
 if (f.serverconfig.pluginsEnable.ScriptSSH) { f.register(require('./plugins/Script-SSH'), {}); }
 if (f.serverconfig.pluginsEnable.ScriptJS) { f.register(require('./plugins/Script-JS'), {}); }
+f.register(require('./plugins/Chain'), {});
+f.register(require('./plugins/Block'), {});
 
 f.log.info(`Loaded Plugins: ${new Date()}`);
 

@@ -16,7 +16,7 @@
 
 
 import React, {Component} from 'react';
-import {Redirect} from 'react-router-dom';
+import {Navigate} from 'react-router-dom';
 import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
 import Grid from '@material-ui/core/Grid';
@@ -33,7 +33,9 @@ export default class index extends Component {
             annotations: {},
             redirect: false
       };
+      
 
+   
       componentDidMount() {
             const apiUrlValidate = '/api/v1/validate';
             fetch(apiUrlValidate)
@@ -43,7 +45,7 @@ export default class index extends Component {
                               this.setState({redirect: true});
                         }
                   });
-            const apiUrl = '/api/v1/ui/resource-definitions?module=' + this.props.match.path;
+            const apiUrl = '/api/v1/ui/resource-definitions?module=' + this.props.path;
             fetch(apiUrl)
                   .then((response) => response.json())
                   .then((data) => {
@@ -73,7 +75,7 @@ export default class index extends Component {
                                           <Typography variant="h6" gutterBottom>
                                                 {this.state.definition['trucker-page-info']}
                                           </Typography>
-                                          <Table render={this.props.match.path} definition={this.state.definition} />
+                                          <Table render={this.props.path} definition={this.state.definition} />
                                     </Box>
                               )}
                               {this.state.definition['createapi'] && (
@@ -81,7 +83,7 @@ export default class index extends Component {
                                           <Typography variant="h6" gutterBottom>
                                                 {this.state.definition['trucker-page-createtableheading']}
                                           </Typography>
-                                          <FormBox render={this.props.match.path} definition={this.state.definition} />
+                                          <FormBox render={this.props.path} definition={this.state.definition} />
                                     </Box>
                               )}
                               <Box mt={8}>
@@ -90,7 +92,7 @@ export default class index extends Component {
                         </div>
                   );
             } else {
-                  return <Redirect to="/login" />;
+                  return <Navigate to="/login" />;
             }
       }
 }

@@ -21,11 +21,13 @@ const appRoot = require('app-root-path');
 
 const fs = require('fs').promises;
 const configdef = require('../config/resource.config.json');
+const server = require('../config/server.config.json');
 
 const ResourceConfig = new NodeCache({useClones: false, stdTTL: configdef.Cache.ResourceFlush});
 const ResourceCreds = new NodeCache({useClones: false, stdTTL: configdef.Cache.CredsFlush});
 const CredHandle = new NodeCache({useClones: false, stdTTL: configdef.Cache.CredsFlush});
 const AJVHandle = new NodeCache({useClones: false, stdTTL: configdef.Cache.ResourceFlush});
+const requestCache = new NodeCache({useClones: false, stdTTL: server.fastify.requestTimeout});
 
 module.exports = fp((f, opts, done) => {
       async function ResourceCredsfunc(user, template) {
@@ -79,5 +81,6 @@ module.exports = fp((f, opts, done) => {
       f.decorate('ResourceCreds', ResourceCredsfunc);
       f.decorate('CredHandler', CredHandle);
       f.decorate('AJVHandle', AJVHandle);
+      f.decorate('requestCache', requestCache);
       done();
 });

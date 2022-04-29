@@ -20,4 +20,4 @@ kind: Kustomization
 images:
 - name: controller
   newName: docker.io/datatruckerio/datatrucker-operator
-  newTag: 1.3.2
+  newTag: 2.0.0

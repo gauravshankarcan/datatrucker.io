@@ -113,16 +113,17 @@ API:
       credentials: false
       jobs: false
       ui: false
-      DB: false
-      UtilSentiment: false
-      UtilFuzzy: false
-      UtilEcho: false
-      IOTRedis: false
-      IOTKafka: false
-      FileSFTP: false
-      ScriptShell: false
-      ScriptSSH: false
+      DB: true
+      UtilSentiment: true
+      UtilFuzzy: true
+      UtilEcho: true
+      IOTRedis: true
+      IOTKafka: true
+      FileSFTP: true
+      ScriptShell: true
+      ScriptSSH: true
       ScriptJS: false
+      IOTProxy: true
       Login: true
   
   managementServer: 

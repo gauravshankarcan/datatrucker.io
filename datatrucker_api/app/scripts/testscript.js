@@ -15,7 +15,7 @@
 */ 
 
 
-const runHandle = async (data) => {
+const runHandle = async (data,request) => {
     return new Promise((resolve) => {
             resolve(data.number*data.number*data.number)
     })

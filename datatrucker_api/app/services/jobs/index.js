@@ -36,5 +36,4 @@ module.exports = async function jobs(fastify, opts) {
       });
 
       fastify.all('/jobs/:jobid', {schema: schema.job, preValidation: [fastify.authenticate]}, handler.job);
-      fastify.all('/chain/:chainid', {schema: schema.job, preValidation: [fastify.authenticate]}, handler.chain);
 };

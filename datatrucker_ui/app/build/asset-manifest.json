@@ -1,29 +1,14 @@
 {
   "files": {
-    "main.css": "/static/css/main.3b106c93.chunk.css",
-    "main.js": "/static/js/main.5d3589b6.chunk.js",
-    "main.js.map": "/static/js/main.5d3589b6.chunk.js.map",
-    "runtime-main.js": "/static/js/runtime-main.96eb7d19.js",
-    "runtime-main.js.map": "/static/js/runtime-main.96eb7d19.js.map",
-    "static/js/2.43bd2db9.chunk.js": "/static/js/2.43bd2db9.chunk.js",
-    "static/js/2.43bd2db9.chunk.js.map": "/static/js/2.43bd2db9.chunk.js.map",
-    "static/js/3.be271ac6.chunk.js": "/static/js/3.be271ac6.chunk.js",
-    "static/js/3.be271ac6.chunk.js.map": "/static/js/3.be271ac6.chunk.js.map",
-    "static/js/4.3c02ee6a.chunk.js": "/static/js/4.3c02ee6a.chunk.js",
-    "static/js/4.3c02ee6a.chunk.js.map": "/static/js/4.3c02ee6a.chunk.js.map",
-    "static/js/5.c353bc9b.chunk.js": "/static/js/5.c353bc9b.chunk.js",
-    "static/js/5.c353bc9b.chunk.js.map": "/static/js/5.c353bc9b.chunk.js.map",
-    "index.html": "/index.html",
-    "static/css/main.3b106c93.chunk.css.map": "/static/css/main.3b106c93.chunk.css.map",
-    "static/js/2.43bd2db9.chunk.js.LICENSE.txt": "/static/js/2.43bd2db9.chunk.js.LICENSE.txt",
-    "static/js/3.be271ac6.chunk.js.LICENSE.txt": "/static/js/3.be271ac6.chunk.js.LICENSE.txt",
-    "static/js/4.3c02ee6a.chunk.js.LICENSE.txt": "/static/js/4.3c02ee6a.chunk.js.LICENSE.txt",
-    "static/js/5.c353bc9b.chunk.js.LICENSE.txt": "/static/js/5.c353bc9b.chunk.js.LICENSE.txt"
+    "main.css": "/static/css/main.8489e7b5.css",
+    "main.js": "/static/js/main.cf5ebd16.js",
+    "static/js/905.80d4fa14.chunk.js": "/static/js/905.80d4fa14.chunk.js",
+    "static/js/313.49acbfcd.chunk.js": "/static/js/313.49acbfcd.chunk.js",
+    "static/js/127.701816cf.chunk.js": "/static/js/127.701816cf.chunk.js",
+    "index.html": "/index.html"
   },
   "entrypoints": [
-    "static/js/runtime-main.96eb7d19.js",
-    "static/js/2.43bd2db9.chunk.js",
-    "static/css/main.3b106c93.chunk.css",
-    "static/js/main.5d3589b6.chunk.js"
+    "static/css/main.8489e7b5.css",
+    "static/js/main.cf5ebd16.js"
   ]
 }

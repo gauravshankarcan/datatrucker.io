@@ -16,7 +16,7 @@
 
 
 # Current Operator version
-VERSION ?= 1.3.2
+VERSION ?= 2.0.0
 # Default bundle image tag
 BUNDLE_IMG ?= docker.io/datatruckerio/datatrucker-operator-controller-bundle:$(VERSION)
 # Options for 'bundle-build'
@@ -58,11 +58,11 @@ undeploy: kustomize
 
 # Build the docker image
 docker-build:
-	podman build . -t ${IMG}
+	docker build . -t ${IMG}
 
 # Push the docker image
 docker-push:
-	podman push ${IMG}
+	docker push ${IMG}
 
 PATH  := $(PATH):$(PWD)/bin
 SHELL := env PATH=$(PATH) /bin/sh
@@ -108,8 +108,8 @@ bundle: kustomize
 # Build the bundle image.
 .PHONY: bundle-build
 bundle-build:
-	podman build -f bundle.Dockerfile -t $(BUNDLE_IMG) .
+	docker build -f bundle.Dockerfile -t $(BUNDLE_IMG) .
 
 
 bundle-push:
-	podman push ${BUNDLE_IMG}
+	docker push ${BUNDLE_IMG}

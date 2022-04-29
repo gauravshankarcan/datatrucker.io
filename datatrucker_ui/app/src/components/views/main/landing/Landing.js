@@ -15,7 +15,7 @@
 */ 
 
 import React, {forwardRef, Component} from 'react';
-import {Redirect} from 'react-router-dom';
+import {Navigate} from 'react-router-dom';
 import {withStyles} from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
@@ -151,9 +151,9 @@ class Landing extends Component {
       render() {
             const {classes} = this.props;
             if (!this.state.isRegisterd) {
-                  return <Redirect to="/register" />;
+                  return <Navigate to="/register" />;
             } else if (this.state.isRegisterd && !this.state.isLoggedin) {
-                  return <Redirect to="/login" />;
+                  return <Navigate to="/login" />;
             } else {
                   return (
                         <div>

@@ -37,6 +37,9 @@
                   "Kafka": {
                         "redirect": "/iot/kafka"
                   },
+                  "Proxy": {
+                        "redirect": "/iot/proxy"
+                  },
                   "OPTIONS": {
                         "ico": "CloudCircleOutlinedIcon"
                   }
@@ -69,9 +72,12 @@
                         "ico": "DeveloperModeOutlinedIcon"
                   }
             },
-            "Build Chains": {
+            "Build Chains and Blocks": {
                   "Chains APIs": {
                         "redirect": "/chains"
+                  },
+                  "Blocks": {
+                        "redirect": "/block"
                   },
                   "OPTIONS": {
                         "ico": "AllInclusiveOutlinedIcon"

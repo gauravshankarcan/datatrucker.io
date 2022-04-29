@@ -32,6 +32,8 @@ const schemaType ={ type: 'string',
                         'Util-Echo',
                         'Util-Fuzzy',
                         'Util-Sentiment',
+                        'IOT-Proxy',
+                        'Block',
                         'Chain'
                         ]
                   }
@@ -78,7 +80,9 @@ const resourceCreate = {
                   source: schemaSource,
                   source_path: schemaSourcePath,
                   target_path: schemaTargetPath,
-                  job_timeout: schemaJobTimeout                 
+                  job_timeout: schemaJobTimeout,
+                  resourcelinkedmethod: schemaRestMethod,
+                  resourcelink: schemaResourceName,        
             }
       }
 };

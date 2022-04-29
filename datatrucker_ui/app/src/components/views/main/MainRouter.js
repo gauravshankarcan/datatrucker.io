@@ -15,7 +15,7 @@
 */ 
 
 import React, {Component} from 'react';
-import {BrowserRouter as Router, Route} from 'react-router-dom';
+import {BrowserRouter,Routes, Route} from 'react-router-dom';
 
 //import all the routes
 import Login from './login/login';
@@ -27,44 +27,46 @@ export default class MainRouter extends Component {
       render() {
             return (
                   <div>
-                        <Router>
-                              <div>
-                                    <Route exact path="/register" component={Register}></Route>
-                                    <Route exact path="/login" component={Login}></Route>
-                                    <Route exact path="/users" component={Pages}></Route>
-                                    <Route exact path="/groups" component={Pages}></Route>
-                                    <Route exact path="/user-mapping" component={Pages}></Route>
-                                    <Route exact path="/api-browser" component={Pages}></Route>
-                                    <Route exact path="/credentials/postgres" component={Pages}></Route>
-                                    <Route exact path="/credentials/mysql" component={Pages}></Route>
-                                    <Route exact path="/credentials/mssql" component={Pages}></Route>
-                                    <Route exact path="/credentials/oracle" component={Pages}></Route>
-                                    <Route exact path="/credentials/sqllite" component={Pages}></Route>
-                                    <Route exact path="/credentials/maria" component={Pages}></Route>
-                                    <Route exact path="/credentials/redis" component={Pages}></Route>
-                                    <Route exact path="/credentials/kafka" component={Pages}></Route>
-                                    <Route exact path="/credentials/shell" component={Pages}></Route>
-                                    <Route exact path="/credentials/file" component={Pages}></Route>
-                                    <Route exact path="/utils/sentiment" component={Pages}></Route>
-                                    <Route exact path="/utils/fuzzy" component={Pages}></Route>
-                                    <Route exact path="/utils/echo" component={Pages}></Route>
-                                    <Route exact path="/script/jsscript" component={Pages}></Route>
-                                    <Route exact path="/script/sshscript" component={Pages}></Route>
-                                    <Route exact path="/script/shell" component={Pages}></Route>
-                                    <Route exact path="/iot/redis" component={Pages}></Route>
-                                    <Route exact path="/iot/kafka" component={Pages}></Route>
-                                    <Route exact path="/db/postgres" component={Pages}></Route>
-                                    <Route exact path="/db/mysql" component={Pages}></Route>
-                                    <Route exact path="/db/mssql" component={Pages}></Route>
-                                    <Route exact path="/db/oracle" component={Pages}></Route>
-                                    <Route exact path="/db/sqllite" component={Pages}></Route>
-                                    <Route exact path="/db/maria" component={Pages}></Route>
-                                    <Route exact path="/file/sftp" component={Pages}></Route>
-                                    <Route exact path="/chains" component={Pages}></Route>
-                                    <Route exact path="/home" component={Landing}></Route>
-                                    <Route exact path="/" component={Landing}></Route>
-                              </div>
-                        </Router>
+                  <BrowserRouter>
+                      <Routes>
+                                    <Route exact path="/register" element={ <Register /> }></Route>
+                                    <Route exact path="/login" element={ <Login /> }></Route>
+                                    <Route exact path="/users" element={ <Pages path="/users"/> }></Route>
+                                    <Route exact path="/groups" element={ <Pages path="/groups"/> }></Route>
+                                    <Route exact path="/user-mapping" element={ <Pages path="/user-mapping"/> }></Route>
+                                    <Route exact path="/api-browser" element={ <Pages path="/api-browser"/> }></Route>
+                                    <Route exact path="/credentials/postgres" element={ <Pages path="/credentials/postgres"/> }></Route>
+                                    <Route exact path="/credentials/mysql" element={ <Pages path="/credentials/mysql"/> }></Route>
+                                    <Route exact path="/credentials/mssql" element={ <Pages path="/credentials/mssql"/> }></Route>
+                                    <Route exact path="/credentials/oracle" element={ <Pages path="/credentials/oracle"/> }></Route>
+                                    <Route exact path="/credentials/sqllite" element={ <Pages path="/credentials/sqllite"/> }></Route>
+                                    <Route exact path="/credentials/maria" element={ <Pages path="/credentials/maria"/> }></Route>
+                                    <Route exact path="/credentials/redis" element={ <Pages path="/credentials/redis"/> }></Route>
+                                    <Route exact path="/credentials/kafka" element={ <Pages path="/credentials/kafka"/> }></Route>
+                                    <Route exact path="/credentials/shell" element={ <Pages path="/credentials/shell"/> }></Route>
+                                    <Route exact path="/credentials/file" element={ <Pages path="/credentials/file"/> }></Route>
+                                    <Route exact path="/utils/sentiment" element={ <Pages path="/utils/sentiment"/> }></Route>
+                                    <Route exact path="/utils/fuzzy" element={ <Pages path="/utils/fuzzy"/> }></Route>
+                                    <Route exact path="/utils/echo" element={ <Pages path="/utils/echo"/> }></Route>
+                                    <Route exact path="/script/jsscript" element={ <Pages path="/script/jsscript"/> }></Route>
+                                    <Route exact path="/script/sshscript" element={ <Pages path="/script/sshscript"/> }></Route>
+                                    <Route exact path="/script/shell" element={ <Pages path="/script/shell"/> }></Route>
+                                    <Route exact path="/iot/redis" element={ <Pages path="/iot/redis"/> }></Route>
+                                    <Route exact path="/iot/kafka" element={ <Pages path="/iot/kafka"/> }></Route>
+                                    <Route exact path="/db/postgres" element={ <Pages path="/db/postgres"/> }></Route>
+                                    <Route exact path="/db/mysql" element={ <Pages path="/db/mysql"/> }></Route>
+                                    <Route exact path="/db/mssql" element={ <Pages path="/db/mssql"/> }></Route>
+                                    <Route exact path="/db/oracle" element={ <Pages path="/db/oracle"/> }></Route>
+                                    <Route exact path="/db/sqllite" element={ <Pages path="/db/sqllite"/> }></Route>
+                                    <Route exact path="/db/maria" element={ <Pages path="/db/maria"/> }></Route>
+                                    <Route exact path="/file/sftp" element={ <Pages path="/file/sftp"/> }></Route>
+                                    <Route exact path="/chains" element={ <Pages exact path="/chains"/> }></Route>
+                                    <Route exact path="/block" element={ <Pages exact path="/block"/> }></Route>
+                                    <Route exact path="/iot/proxy" element={ <Pages exact path="/iot/proxy"/> }></Route>
+                                    <Route exact path="/home" element={ <Landing /> }></Route>
+                                    <Route exact path="/" element={ <Landing /> }></Route>
+                      </Routes>  
+                  </BrowserRouter>
                   </div>
             );
       }

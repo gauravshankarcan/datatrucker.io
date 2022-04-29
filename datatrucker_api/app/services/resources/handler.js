@@ -79,7 +79,9 @@ async function resourceCreate(request, reply) {
             script_args: request.body.script_args,
             job_timeout: request.body.job_timeout,
             chain: typeof request.body.chain === 'string' ? JSON.parse(request.body.chain) : request.body.chain,
-            options: typeof request.body.options === 'string' ? JSON.parse(request.body.options) : request.body.options
+            options: typeof request.body.options === 'string' ? JSON.parse(request.body.options) : request.body.options,
+            resourcelink: request.body.resourcelink,
+            resourcelinkedmethod: request.body.resourcelinkedmethod
       };
       const data = JSON.stringify(resource, null, 2);
       await fs.writeFile(path, data);
