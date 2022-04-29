@@ -1,0 +1,33 @@
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: mssql
+  labels:
+    name: mssql
+spec:
+  containers:
+  - name: mssql
+    image: mcr.microsoft.com/mssql/server:2017-CU19-ubuntu-16.04
+    ports:
+    - containerPort: 1433
+    env:
+    - name: ACCEPT_EULA
+      value: "Y"
+    - name: SA_PASSWORD
+      value: SpikePrototype2016!
+
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mssql
+spec:
+  type: NodePort
+  selector:
+    name: mssql
+  ports:
+    - port: 1433
+      targetPort: 1433
+      nodePort: 30002

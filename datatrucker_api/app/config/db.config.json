@@ -1,0 +1,10 @@
+{
+      "type": "pg",
+      "host": "192.168.49.2",
+      "port": 30001,
+      "username": "testuser",
+      "password": "password",
+      "database": "userdb",
+      "PoolMin": 300,
+      "PoolMax": 600
+}

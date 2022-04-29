@@ -1,0 +1,118 @@
+{
+      "/groups": {
+            "trucker-page-searchbox": "Group Name",
+            "trucker-page-title": "Manage Groups",
+            "trucker-page-info": "Get List of Group / Create,Modify,Delete Groups ",
+            "trucker-page-searchtableheading": "Get List of Groups",
+            "trucker-page-createtableheading": "Group Management",
+            "searchapi": "groups?",
+            "createapi": "groups",
+            "updateapi": "groups",
+            "deleteapi": "groups",
+            "searchid": "groupname",
+            "updateid": "groupname",
+            "deleteid": "groupname",
+            "searchcolumns": [
+                  {
+                        "field": "id",
+                        "title": "Id"
+                  },
+                  {
+                        "field": "groupname",
+                        "title": "Group Name"
+                  },
+                  {
+                        "field": "level",
+                        "title": "Level"
+                  },
+                  {
+                        "field": "tenantname",
+                        "title": "Tenant"
+                  },
+                  {
+                        "field": "enabled",
+                        "title": "Enabled"
+                  },
+                  {
+                        "field": "type",
+                        "title": "Type"
+                  }
+            ],
+            "create": [
+                  {
+                        "field": "groupname",
+                        "placeholder": "Group Name",
+                        "type": "text",
+                        "locked": false
+                  },
+                  {
+                        "field": "level",
+                        "placeholder": "Level",
+                        "type": "dropdown",
+                        "locked": false,
+                        "values": ["Tenant_Author", "Tenant_Reader"],
+                        "defaultValue": "Tenant_Author"
+                  },
+                  {
+                        "field": "tenantname",
+                        "placeholder": "Tenant",
+                        "type": "text",
+                        "locked": false
+                  },
+                  {
+                        "field": "enabled",
+                        "placeholder": "Enabled",
+                        "type": "boolean",
+                        "locked": false,
+                        "defaultValue": "true"
+                  },
+                  {
+                        "field": "type",
+                        "placeholder": "Type",
+                        "type": "dropdown",
+                        "locked": false,
+                        "values": ["local","keycloak"],
+                        "defaultValue": "local"
+                  },
+                  {
+                        "field": "asset",
+                        "placeholder": "Asset Info",
+                        "type": "textarea",
+                        "locked": false
+                  }
+            ],
+            "update": [
+                  {
+                        "field": "groupname",
+                        "placeholder": "Group Name",
+                        "type": "text",
+                        "locked": true
+                  },
+                  {
+                        "field": "level",
+                        "placeholder": "Level",
+                        "type": "dropdown",
+                        "locked": false,
+                        "values": ["Tenant_Author", "Tenant_Reader"]
+                  },
+                  {
+                        "field": "tenantname",
+                        "placeholder": "Tenant",
+                        "type": "text",
+                        "locked": false
+                  },
+                  {
+                        "field": "enabled",
+                        "placeholder": "Enabled",
+                        "type": "boolean",
+                        "locked": false
+                  },
+                  {
+                        "field": "asset",
+                        "placeholder": "Asset Info",
+                        "type": "textarea",
+                        "locked": false
+                  }
+            ]
+      }
+}

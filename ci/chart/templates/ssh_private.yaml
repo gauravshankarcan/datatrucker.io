@@ -1,0 +1,27 @@
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: ssh-private
+  labels:
+    name: ssh-private
+spec:
+  containers:
+  - name: ssh-private
+    image: docker.io/jdeathe/centos-ssh:2.6.1
+    ports:
+    - containerPort: 22
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ssh-private
+spec:
+  type: NodePort
+  selector:
+    name: ssh-private
+  ports:
+    - port: 22
+      targetPort: 22
+      nodePort: 30009

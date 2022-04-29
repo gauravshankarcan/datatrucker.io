@@ -1,0 +1,242 @@
+{
+      "/iot/redis": {
+            "trucker-page-searchbox": "API Name",
+            "trucker-page-title": "Create Redis API",
+            "trucker-page-createtableheading": "Create API to communicate with Redis",
+            "createapi": "resources",
+            "deleteapi": "resources",
+            "deleteid": "filename",
+            "searchapi": "resources?type=IOT-Redis",
+            "getapi": "resources",
+            "searchcolumns": [
+                  {
+                        "field": "restmethod",
+                        "title": "Method"
+                  },
+                  {
+                        "field": "tenant",
+                        "title": "Tenant"
+                  },
+                  {
+                        "field": "resourcename",
+                        "title": "Resource Name"
+                  },
+                  {
+                        "field": "filename",
+                        "title": "Filename"
+                  }
+            ],
+            "create": [
+                  {
+                        "field": "resourcename",
+                        "placeholder": "Resource Name",
+                        "type": "text",
+                        "locked": false
+                  },
+                  {
+                        "field": "credentialname",
+                        "placeholder": "Credential Name",
+                        "type": "text",
+                        "locked": false
+                  },
+                  {
+                        "field": "restmethod",
+                        "placeholder": "Method",
+                        "type": "dropdown",
+                        "locked": false,
+                        "values": ["GET", "POST", "PUT", "DELETE", "PATCH"],
+                        "defaultValue": "POST"
+                  },
+                  {
+                        "field": "type",
+                        "placeholder": "Type",
+                        "type": "text",
+                        "locked": true,
+                        "defaultValue": "IOT-Redis"
+                  },
+                  {
+                        "field": "source_type",
+                        "placeholder": "Source Type",
+                        "type": "dropdown",
+                        "locked": false,
+                        "values": ["GET", "SET"],
+                        "defaultValue": "SET"
+                  },
+                  {
+                        "field": "validations",
+                        "placeholder": "Validations",
+                        "type": "jsonarea",
+                        "locked": false,
+                        "defaultValue": {
+                              "type": "object",
+                              "properties": {
+                                    "key": {
+                                          "type": "string",
+                                          "pattern": "^[a-z0-9]*$",
+                                          "maxLength": 5
+                                    },
+                                    "value": {
+                                          "type": "string",
+                                          "pattern": "^[a-z0-9]*$",
+                                          "maxLength": 5
+                                    },
+                                    "ttyl": {
+                                          "type": "integer"
+                                    }
+                              }
+                        }
+                  }
+            ]
+      },
+      "/iot/kafka": {
+            "trucker-page-title": "Create Kafka Producer API",
+            "trucker-page-info": "Create,Delete Kafka Producer API",
+            "trucker-page-createtableheading": "Create a simple Kafka Producer API",
+            "createapi": "resources",
+            "deleteapi": "resources",
+            "deleteid": "filename",
+            "searchapi": "resources?type=IOT-Kafka-Producer",
+            "getapi": "resources",
+            "searchcolumns": [
+                  {
+                        "field": "restmethod",
+                        "title": "Method"
+                  },
+                  {
+                        "field": "tenant",
+                        "title": "Tenant"
+                  },
+                  {
+                        "field": "resourcename",
+                        "title": "Resource Name"
+                  },
+                  {
+                        "field": "filename",
+                        "title": "Filename"
+                  }
+            ],
+            "create": [
+                  {
+                        "field": "resourcename",
+                        "placeholder": "Resource Name",
+                        "type": "text",
+                        "locked": false
+                  },
+                  {
+                        "field": "credentialname",
+                        "placeholder": "Credential Name",
+                        "type": "text",
+                        "locked": false
+                  },
+                  {
+                        "field": "restmethod",
+                        "placeholder": "Method",
+                        "type": "dropdown",
+                        "locked": false,
+                        "values": ["GET", "POST", "PUT", "DELETE", "PATCH"],
+                        "defaultValue": "POST"
+                  },
+                  {
+                        "field": "target_type",
+                        "placeholder": "Topic",
+                        "type": "jsonarea",
+                        "locked": false,
+                        "defaultValue": {
+                              "topic": "SampleTopic"
+                        }
+                  },
+                  {
+                        "field": "validations",
+                        "placeholder": "Validations",
+                        "type": "jsonarea",
+                        "locked": false,
+                        "defaultValue": {
+                              "type": "object",
+                              "properties": {
+                                    "message": {
+                                          "type": "string",
+                                          "pattern": "^[a-z0-9]*$",
+                                          "maxLength": 5
+                                    }
+                              }
+                        }
+                  },
+                  {
+                        "field": "type",
+                        "placeholder": "Type",
+                        "type": "text",
+                        "locked": true,
+                        "defaultValue": "IOT-Kafka-Producer"
+                  }
+            ]
+      },
+
+
+      "/iot/proxy": {
+            "trucker-page-title": "Create Proxy API",
+            "trucker-page-info": "Create,Delete Proxy API",
+            "trucker-page-createtableheading": "Create a simple Axios Proxy API",
+            "createapi": "resources",
+            "deleteapi": "resources",
+            "deleteid": "filename",
+            "searchapi": "resources?type=IOT-Proxy",
+            "getapi": "resources",
+            "searchcolumns": [
+                  {
+                        "field": "restmethod",
+                        "title": "Method"
+                  },
+                  {
+                        "field": "tenant",
+                        "title": "Tenant"
+                  },
+                  {
+                        "field": "resourcename",
+                        "title": "Resource Name"
+                  },
+                  {
+                        "field": "filename",
+                        "title": "Filename"
+                  }
+            ],
+            "create": [
+                  {
+                        "field": "resourcename",
+                        "placeholder": "Resource Name",
+                        "type": "text",
+                        "locked": false
+                  },
+                  {
+                        "field": "restmethod",
+                        "placeholder": "Method",
+                        "type": "dropdown",
+                        "locked": false,
+                        "values": ["GET", "POST", "PUT", "DELETE", "PATCH"],
+                        "defaultValue": "POST"
+                  },
+                  {
+                        "field": "validations",
+                        "placeholder": "Validations",
+                        "type": "jsonarea",
+                        "locked": false,
+                        "defaultValue": {
+                              "type": "object",
+                              "properties": {
+                                    "message": {
+                                          "type": "string",
+                                          "pattern": "^[a-z0-9]*$",
+                                          "maxLength": 5
+                                    }
+                              }
+                        }
+                  },
+                  {
+                        "field": "type",
+                        "placeholder": "Type",
+                        "type": "text",
+                        "locked": true,
+                        "defaultValue": "IOT-Proxy"
+                  }
+            ]
+      }
+}

@@ -1,0 +1,111 @@
+#
+# Copyright 2021 Datatrucker.io Inc , Ontario , Canada
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+
+- set_fact:
+    CRYPTO: "{{ API.crypto  | to_json }}" 
+    RESOURCE: "{{ API.resource | to_json }}" 
+    LOGINSERVER: "{{ API.loginServer  | to_json  }}" 
+    MGMTSSERVER: "{{ API.managementServer   | to_json }}"
+    JOBSSERVER: "{{ API.jobsServer   | to_json }}"
+    DBSSERVER: |
+      {
+                    "type": "{{ DB.type }}",
+                    "host": "{{ DB.hostname }}",
+                    "port": {{ DB.port }},
+                    "username": "{{ DB.user }}",
+                    "password": "{{ DB.password }}",
+                    "database": "{{ DB.databasename }}",
+                    "PoolMin": 300,
+                    "PoolMax": 600
+      }
+
+- name: create a login-config
+  community.kubernetes.k8s:
+    state: present
+    definition:
+      kind: Secret
+      apiVersion: v1
+      type: Opaque
+      metadata:
+        name: '{{ ansible_operator_meta.name }}-login-config'
+        namespace: '{{ ansible_operator_meta.namespace }}'
+      data:
+        publicJWT.key: "{{ API.cryptokeys.publicJWTkey }}"
+        privateJWT.key: "{{ API.cryptokeys.privateJWTkey }}"
+        truckerapi.crt: "{{ API.cryptokeys.truckerapicrt }}"
+        truckerapi.key: "{{ API.cryptokeys.truckerapikey }}"
+        keycloak.key: "{{ API.cryptokeys.keycloakkey }}"
+        crypto.config.json: "{{ CRYPTO  | b64encode}}"
+        db.config.json: "{{ DBSSERVER    | to_json | b64encode }}"
+        resource.config.json: "{{ RESOURCE  | b64encode}}"
+        server.config.json: "{{ LOGINSERVER  | b64encode}}"
+
+- name: create a management-config
+  community.kubernetes.k8s:
+    state: present
+    definition:
+      kind: Secret
+      apiVersion: v1
+      type: Opaque
+      metadata:
+        name: '{{ ansible_operator_meta.name }}-management-config'
+        namespace: '{{ ansible_operator_meta.namespace }}'
+      data:
+        publicJWT.key: "{{ API.cryptokeys.publicJWTkey }}"
+        privateJWT.key: "{{ API.cryptokeys.privateJWTkey }}"
+        truckerapi.crt: "{{ API.cryptokeys.truckerapicrt }}"
+        truckerapi.key: "{{ API.cryptokeys.truckerapikey }}"
+        keycloak.key: "{{ API.cryptokeys.keycloakkey }}"
+        crypto.config.json: "{{ CRYPTO  | b64encode}}"
+        db.config.json: "{{ DBSSERVER    | to_json  | b64encode}}"
+        resource.config.json: "{{ RESOURCE  | b64encode}}"
+        server.config.json: "{{ MGMTSSERVER   | b64encode}}"
+
+- name: create a jobs-config
+  community.kubernetes.k8s:
+    state: present
+    definition:
+      kind: Secret
+      apiVersion: v1
+      type: Opaque
+      metadata:
+        name: '{{ ansible_operator_meta.name }}-jobs-config'
+        namespace: '{{ ansible_operator_meta.namespace }}'
+      data:
+        publicJWT.key: "{{ API.cryptokeys.publicJWTkey }}"
+        privateJWT.key: "{{ API.cryptokeys.privateJWTkey }}"
+        truckerapi.crt: "{{ API.cryptokeys.truckerapicrt }}"
+        truckerapi.key: "{{ API.cryptokeys.truckerapikey }}"
+        keycloak.key: "{{ API.cryptokeys.keycloakkey }}"
+        crypto.config.json: "{{ CRYPTO  | b64encode}}"
+        db.config.json: "{{ DBSSERVER    | to_json  | b64encode }}"
+        resource.config.json: "{{ RESOURCE  | b64encode}}"
+        server.config.json: "{{ JOBSSERVER  | b64encode }}"        
+
+
+
+
+- name: create a dummyconfigmap
+  community.kubernetes.k8s:
+    state: present
+    definition: 
+      apiVersion: v1
+      kind: ConfigMap
+      metadata:
+        name: 'placeholder'
+        namespace: '{{ ansible_operator_meta.namespace }}'
+      data: 
+        placholder: 'dummy'            

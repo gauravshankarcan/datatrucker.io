@@ -1,0 +1,519 @@
+{
+      "/db/postgres": {
+            "trucker-page-title": "Create Postgres API",
+            "trucker-page-createtableheading": "Create a Postgres API",
+            "createapi": "resources",
+            "deleteapi": "resources",
+            "deleteid": "filename",
+            "searchapi": "resources?type=DB-Postgres",
+            "getapi": "resources",
+            "searchcolumns": [
+                  {
+                        "field": "restmethod",
+                        "title": "Method"
+                  },
+                  {
+                        "field": "tenant",
+                        "title": "Tenant"
+                  },
+                  {
+                        "field": "resourcename",
+                        "title": "Resource Name"
+                  },
+                  {
+                        "field": "filename",
+                        "title": "Filename"
+                  }
+            ],
+            "create": [
+                  {
+                        "field": "resourcename",
+                        "placeholder": "Resource Name",
+                        "type": "text",
+                        "locked": false
+                  },
+                  {
+                        "field": "credentialname",
+                        "placeholder": "Credential Name",
+                        "type": "text",
+                        "locked": false
+                  },
+                  {
+                        "field": "restmethod",
+                        "placeholder": "Method",
+                        "type": "dropdown",
+                        "locked": false,
+                        "values": ["GET", "POST", "PUT", "DELETE", "PATCH"],
+                        "defaultValue": "POST"
+                  },
+                  {
+                        "field": "job_timeout",
+                        "placeholder": "Timeout",
+                        "type": "integer",
+                        "locked": false,
+                        "defaultValue": 1000
+                  },
+                  {
+                        "field": "script",
+                        "placeholder": "Script",
+                        "type": "textarea",
+                        "locked": false,
+                        "defaultValue": "Select * from table"
+                  },
+                  {
+                        "field": "validations",
+                        "placeholder": "Validations",
+                        "type": "jsonarea",
+                        "locked": false,
+                        "defaultValue": {
+                              "type": "object",
+                              "properties": {
+                                    "key": {
+                                          "type": "string",
+                                          "pattern": "^[a-z0-9]*$",
+                                          "maxLength": 5
+                                    }
+                              }
+                        }
+                  },
+                  {
+                        "field": "type",
+                        "placeholder": "Type",
+                        "type": "text",
+                        "locked": true,
+                        "defaultValue": "DB-Postgres"
+                  }
+            ]
+      },
+      "/db/mysql": {
+            "trucker-page-title": "Create MySQL API",
+            "trucker-page-createtableheading": "Create a MySQL API",
+            "createapi": "resources",
+            "deleteapi": "resources",
+            "deleteid": "filename",
+            "searchapi": "resources?type=DB-Mysql",
+            "getapi": "resources",
+            "searchcolumns": [
+                  {
+                        "field": "restmethod",
+                        "title": "Method"
+                  },
+                  {
+                        "field": "tenant",
+                        "title": "Tenant"
+                  },
+                  {
+                        "field": "resourcename",
+                        "title": "Resource Name"
+                  },
+                  {
+                        "field": "filename",
+                        "title": "Filename"
+                  }
+            ],
+            "create": [
+                  {
+                        "field": "resourcename",
+                        "placeholder": "Resource Name",
+                        "type": "text",
+                        "locked": false
+                  },
+                  {
+                        "field": "credentialname",
+                        "placeholder": "Credential Name",
+                        "type": "text",
+                        "locked": false
+                  },
+                  {
+                        "field": "restmethod",
+                        "placeholder": "Method",
+                        "type": "dropdown",
+                        "locked": false,
+                        "values": ["GET", "POST", "PUT", "DELETE", "PATCH"],
+                        "defaultValue": "POST"
+                  },
+                  {
+                        "field": "job_timeout",
+                        "placeholder": "Timeout",
+                        "type": "integer",
+                        "locked": false,
+                        "defaultValue": 1000
+                  },
+                  {
+                        "field": "script",
+                        "placeholder": "Script",
+                        "type": "textarea",
+                        "locked": false,
+                        "defaultValue": "Select * from table"
+                  },
+                  {
+                        "field": "validations",
+                        "placeholder": "Validations",
+                        "type": "jsonarea",
+                        "locked": false,
+                        "defaultValue": {
+                              "type": "object",
+                              "properties": {
+                                    "key": {
+                                          "type": "string",
+                                          "pattern": "^[a-z0-9]*$",
+                                          "maxLength": 5
+                                    }
+                              }
+                        }
+                  },
+                  {
+                        "field": "type",
+                        "placeholder": "Type",
+                        "type": "text",
+                        "locked": true,
+                        "defaultValue": "DB-Mysql"
+                  }
+            ]
+      },
+      "/db/mssql": {
+            "trucker-page-title": "Create MSSQL API",
+            "trucker-page-createtableheading": "Create a MSSQL API",
+            "createapi": "resources",
+            "deleteapi": "resources",
+            "deleteid": "filename",
+            "searchapi": "resources?type=DB-Mssql",
+            "getapi": "resources",
+            "searchcolumns": [
+                  {
+                        "field": "restmethod",
+                        "title": "Method"
+                  },
+                  {
+                        "field": "tenant",
+                        "title": "Tenant"
+                  },
+                  {
+                        "field": "resourcename",
+                        "title": "Resource Name"
+                  },
+                  {
+                        "field": "filename",
+                        "title": "Filename"
+                  }
+            ],
+            "create": [
+                  {
+                        "field": "resourcename",
+                        "placeholder": "Resource Name",
+                        "type": "text",
+                        "locked": false
+                  },
+                  {
+                        "field": "credentialname",
+                        "placeholder": "Credential Name",
+                        "type": "text",
+                        "locked": false
+                  },
+                  {
+                        "field": "restmethod",
+                        "placeholder": "Method",
+                        "type": "dropdown",
+                        "locked": false,
+                        "values": ["GET", "POST", "PUT", "DELETE", "PATCH"],
+                        "defaultValue": "POST"
+                  },
+                  {
+                        "field": "job_timeout",
+                        "placeholder": "Timeout",
+                        "type": "integer",
+                        "locked": false,
+                        "defaultValue": 1000
+                  },
+                  {
+                        "field": "script",
+                        "placeholder": "Script",
+                        "type": "textarea",
+                        "locked": false,
+                        "defaultValue": "Select * from table"
+                  },
+                  {
+                        "field": "validations",
+                        "placeholder": "Validations",
+                        "type": "jsonarea",
+                        "locked": false,
+                        "defaultValue": {
+                              "type": "object",
+                              "properties": {
+                                    "key": {
+                                          "type": "string",
+                                          "pattern": "^[a-z0-9]*$",
+                                          "maxLength": 5
+                                    }
+                              }
+                        }
+                  },
+                  {
+                        "field": "type",
+                        "placeholder": "Type",
+                        "type": "text",
+                        "locked": true,
+                        "defaultValue": "DB-Mssql"
+                  }
+            ]
+      },
+      "/db/oracle": {
+            "trucker-page-title": "Create Oracle API",
+            "trucker-page-createtableheading": "Create a Oracle API",
+            "createapi": "resources",
+            "deleteapi": "resources",
+            "deleteid": "filename",
+            "searchapi": "resources?type=DB-Oracle",
+            "getapi": "resources",
+            "searchcolumns": [
+                  {
+                        "field": "restmethod",
+                        "title": "Method"
+                  },
+                  {
+                        "field": "tenant",
+                        "title": "Tenant"
+                  },
+                  {
+                        "field": "resourcename",
+                        "title": "Resource Name"
+                  },
+                  {
+                        "field": "filename",
+                        "title": "Filename"
+                  }
+            ],
+            "create": [
+                  {
+                        "field": "resourcename",
+                        "placeholder": "Resource Name",
+                        "type": "text",
+                        "locked": false
+                  },
+                  {
+                        "field": "credentialname",
+                        "placeholder": "Credential Name",
+                        "type": "text",
+                        "locked": false
+                  },
+                  {
+                        "field": "restmethod",
+                        "placeholder": "Method",
+                        "type": "dropdown",
+                        "locked": false,
+                        "values": ["GET", "POST", "PUT", "DELETE", "PATCH"],
+                        "defaultValue": "POST"
+                  },
+                  {
+                        "field": "job_timeout",
+                        "placeholder": "Timeout",
+                        "type": "integer",
+                        "locked": false,
+                        "defaultValue": 1000
+                  },
+                  {
+                        "field": "script",
+                        "placeholder": "Script",
+                        "type": "textarea",
+                        "locked": false,
+                        "defaultValue": "Select * from table"
+                  },
+                  {
+                        "field": "validations",
+                        "placeholder": "Validations",
+                        "type": "jsonarea",
+                        "locked": false,
+                        "defaultValue": {
+                              "type": "object",
+                              "properties": {
+                                    "key": {
+                                          "type": "string",
+                                          "pattern": "^[a-z0-9]*$",
+                                          "maxLength": 5
+                                    }
+                              }
+                        }
+                  },
+                  {
+                        "field": "type",
+                        "placeholder": "Type",
+                        "type": "text",
+                        "locked": true,
+                        "defaultValue": "DB-Oracle"
+                  }
+            ]
+      },
+      "/db/sqllite": {
+            "trucker-page-title": "Create Sqllite API",
+            "trucker-page-createtableheading": "Create a Sqllite API",
+            "createapi": "resources",
+            "deleteapi": "resources",
+            "deleteid": "filename",
+            "searchapi": "resources?type=DB-Sqllite",
+            "getapi": "resources",
+            "searchcolumns": [
+                  {
+                        "field": "restmethod",
+                        "title": "Method"
+                  },
+                  {
+                        "field": "tenant",
+                        "title": "Tenant"
+                  },
+                  {
+                        "field": "resourcename",
+                        "title": "Resource Name"
+                  },
+                  {
+                        "field": "filename",
+                        "title": "Filename"
+                  }
+            ],
+            "create": [
+                  {
+                        "field": "resourcename",
+                        "placeholder": "Resource Name",
+                        "type": "text",
+                        "locked": false
+                  },
+                  {
+                        "field": "credentialname",
+                        "placeholder": "Credential Name",
+                        "type": "text",
+                        "locked": false
+                  },
+                  {
+                        "field": "restmethod",
+                        "placeholder": "Method",
+                        "type": "dropdown",
+                        "locked": false,
+                        "values": ["GET", "POST", "PUT", "DELETE", "PATCH"],
+                        "defaultValue": "POST"
+                  },
+                  {
+                        "field": "job_timeout",
+                        "placeholder": "Timeout",
+                        "type": "integer",
+                        "locked": false,
+                        "defaultValue": 1000
+                  },
+                  {
+                        "field": "script",
+                        "placeholder": "Script",
+                        "type": "textarea",
+                        "locked": false,
+                        "defaultValue": "Select * from table"
+                  },
+                  {
+                        "field": "validations",
+                        "placeholder": "Validations",
+                        "type": "jsonarea",
+                        "locked": false,
+                        "defaultValue": {
+                              "type": "object",
+                              "properties": {
+                                    "key": {
+                                          "type": "string",
+                                          "pattern": "^[a-z0-9]*$",
+                                          "maxLength": 5
+                                    }
+                              }
+                        }
+                  },
+
+                  {
+                        "field": "type",
+                        "placeholder": "Type",
+                        "type": "text",
+                        "locked": true,
+                        "defaultValue": "DB-Sqllite"
+                  }
+            ]
+      },
+      "/db/maria": {
+            "trucker-page-title": "Create MariaDB API",
+            "trucker-page-createtableheading": "Create a MariaDB API",
+            "createapi": "resources",
+            "deleteapi": "resources",
+            "deleteid": "filename",
+            "searchapi": "resources?type=DB-Mariadb",
+            "getapi": "resources",
+            "searchcolumns": [
+                  {
+                        "field": "restmethod",
+                        "title": "Method"
+                  },
+                  {
+                        "field": "tenant",
+                        "title": "Tenant"
+                  },
+                  {
+                        "field": "resourcename",
+                        "title": "Resource Name"
+                  },
+                  {
+                        "field": "filename",
+                        "title": "Filename"
+                  }
+            ],
+            "create": [
+                  {
+                        "field": "resourcename",
+                        "placeholder": "Resource Name",
+                        "type": "text",
+                        "locked": false
+                  },
+                  {
+                        "field": "credentialname",
+                        "placeholder": "Credential Name",
+                        "type": "text",
+                        "locked": false
+                  },
+                  {
+                        "field": "restmethod",
+                        "placeholder": "Method",
+                        "type": "dropdown",
+                        "locked": false,
+                        "values": ["GET", "POST", "PUT", "DELETE", "PATCH"],
+                        "defaultValue": "POST"
+                  },
+                  {
+                        "field": "job_timeout",
+                        "placeholder": "Timeout",
+                        "type": "integer",
+                        "locked": false,
+                        "defaultValue": 1000
+                  },
+                  {
+                        "field": "script",
+                        "placeholder": "Script",
+                        "type": "textarea",
+                        "locked": false,
+                        "defaultValue": "Select * from table"
+                  },
+                  {
+                        "field": "validations",
+                        "placeholder": "Validations",
+                        "type": "jsonarea",
+                        "locked": false,
+                        "defaultValue": {
+                              "type": "object",
+                              "properties": {
+                                    "key": {
+                                          "type": "string",
+                                          "pattern": "^[a-z0-9]*$",
+                                          "maxLength": 5
+                                    }
+                              }
+                        }
+                  },
+                  {
+                        "field": "type",
+                        "placeholder": "Type",
+                        "type": "text",
+                        "locked": true,
+                        "defaultValue": "DB-Mariadb"
+                  }
+            ]
+      }
+}

@@ -1,0 +1,117 @@
+#
+# Copyright 2021 Datatrucker.io Inc , Ontario , Canada
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+
+- set_fact:
+    SERVICEENTRY: |
+      kind: Service
+      apiVersion: v1
+      metadata:
+        name: 'db'
+        namespace: '{{ ansible_operator_meta.namespace }}'
+        labels:
+          name: db
+          cleanup: trucker
+      spec:
+        ports:
+        - protocol: TCP
+          port: {{ DB.port | int }}
+          targetPort: 5432
+        selector:
+          name: '{{ ansible_operator_meta.name }}-db'
+        type: ClusterIP
+        sessionAffinity: None   
+
+
+- name: create a service
+  community.kubernetes.k8s:
+    state: present
+    definition: "{{ SERVICEENTRY | from_yaml }}"
+ 
+
+- name: create a TempDB
+  community.kubernetes.k8s:
+    state: present
+    definition:
+      kind: Deployment
+      apiVersion: apps/v1
+      metadata:
+        name: '{{ ansible_operator_meta.name }}-db'
+        namespace: '{{ ansible_operator_meta.namespace }}'
+        labels:
+          name: '{{ ansible_operator_meta.name }}-db'
+          cleanup: trucker
+          temporary: "yes"
+      spec:
+        replicas: 1
+        selector:
+          matchLabels:
+            name: '{{ ansible_operator_meta.name }}-db'
+        template:
+          metadata:
+            labels:
+              name: '{{ ansible_operator_meta.name }}-db'
+              namespace: '{{ ansible_operator_meta.namespace }}'
+              cleanup: trucker-db
+          spec:
+            volumes:
+              - name: postgredb
+                persistentVolumeClaim:
+                  claimName: "{{ TempDB.pvc }}"
+            containers:
+            - name: postgres
+              image: docker.io/crunchydata/crunchy-postgres:centos8-13.2-4.6.1
+              volumeMounts:
+                  - mountPath: /pgdata
+                    name: postgredb
+                    readOnly: false
+              env:
+              - name: MODE
+                value: postgres
+              - name: PG_PRIMARY_PORT
+                value: '5432'
+              - name: PG_MODE
+                value: primary
+              - name: PGDATA_PATH_OVERRIDE
+                value: primary
+              - name: PGHOST
+                value: "/tmp"
+              - name: PG_USER
+                value: "{{ DB.user }}"
+              - name: PG_PASSWORD
+                value: "{{ DB.password }}"
+              - name: PG_PRIMARY_USER
+                value: "{{ DB.user }}"
+              - name: PG_PRIMARY_PASSWORD
+                value: "{{ DB.password }}"
+              - name: PG_ROOT_PASSWORD
+                value: "{{ DB.password }}"
+              - name: PG_DATABASE
+                value: "{{ DB.databasename }}"
+              ports:
+              - containerPort: 5432
+                protocol: TCP
+              resources: {}
+              imagePullPolicy: Always
+            restartPolicy: Always
+            terminationGracePeriodSeconds: 62
+            dnsPolicy: ClusterFirst
+            securityContext: {}
+        strategy:
+          type: RollingUpdate
+          rollingUpdate:
+            maxUnavailable: 1
+            maxSurge: 1
+ 

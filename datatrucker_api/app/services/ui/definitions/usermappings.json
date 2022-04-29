@@ -1,0 +1,68 @@
+{
+      "/user-mapping": {
+            "trucker-page-searchbox": "User Mappings Name",
+            "trucker-page-title": "Manager User Mappings",
+            "trucker-page-info": "Get List of Group / Create,Delete User Mappings ",
+            "trucker-page-searchtableheading": "Get List of User Mappings",
+            "trucker-page-createtableheading": "User Mappings Management",
+            "searchapi": "users/usergrouplisting?",
+            "createapi": "users/addusertogroup",
+            "deleteapi": "users/deleteuserfromgroup",
+            "searchid": "mapping",
+            "deleteid": "id",
+            "searchcolumns": [
+                  {
+                        "field": "id",
+                        "title": "Id"
+                  },
+                  {
+                        "field": "username",
+                        "title": "User Name"
+                  },
+                  {
+                        "field": "groupname",
+                        "title": "Group Name"
+                  },
+                  {
+                        "field": "tenantname",
+                        "title": "Tenant"
+                  },
+                  {
+                        "field": "level",
+                        "title": "Level"
+                  },
+                  {
+                        "field": "UserEnabled",
+                        "title": "User Enabled"
+                  },
+                  {
+                        "field": "GroupEnabled",
+                        "title": "Group Enabled"
+                  },
+                  {
+                        "field": "MappingAsset",
+                        "title": "Asset"
+                  }
+            ],
+            "create": [
+                  {
+                        "field": "username",
+                        "placeholder": "User Name",
+                        "type": "text",
+                        "locked": false
+                  },
+                  {
+                        "field": "groupname",
+                        "placeholder": "Group Name",
+                        "type": "text",
+                        "locked": false
+                  },
+                  {
+                        "field": "asset",
+                        "placeholder": "Asset Info",
+                        "type": "textarea",
+                        "locked": false
+                  }
+            ]
+      }
+}

@@ -1,0 +1,37 @@
+{
+            "Credentials": {
+                  "Postgres Credentials": {
+                        "redirect": "/credentials/postgres"
+                  },
+                  "MySQL Credentials": {
+                        "redirect": "/credentials/mysql"
+                  },
+                  "MSSQL Credentials": {
+                        "redirect": "/credentials/mssql"
+                  },
+                  "Oracle Credentials": {
+                        "redirect": "/credentials/oracle"
+                  },
+                  "Sqllite Credentials": {
+                        "redirect": "/credentials/sqllite"
+                  },
+                  "MariaDB Credentials": {
+                        "redirect": "/credentials/maria"
+                  },
+                  "Redis Credentials": {
+                        "redirect": "/credentials/redis"
+                  },
+                  "Kafka Credentials": {
+                        "redirect": "/credentials/kafka"
+                  },
+                  "Shell SSH Credentials": {
+                        "redirect": "/credentials/shell"
+                  },
+                  "File SSH Credentials": {
+                        "redirect": "/credentials/file"
+                  },
+                  "OPTIONS": {
+                        "ico": "VpnKeyRoundedIcon"
+                  }
+            }
+}

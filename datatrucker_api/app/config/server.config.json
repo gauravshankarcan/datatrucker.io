@@ -1,0 +1,62 @@
+{
+      "bind": "0.0.0.0",
+      "port": "8080",
+      "protocol" : {
+         "type": "http",   
+         "http2": false ,
+         "httpsconfig" :{
+            "allowHTTP1" :true,
+            "cert" : "truckerapi.crt",
+            "key" : "truckerapi.key"
+         }
+      },
+      "keycloak": true,
+      "jobResponseErrors" : true,
+      "requestLog" : false,
+      "compression": {
+            "threshold": 2048
+      },
+      "fastify": {
+            "requestTimeout": 1,
+            "logger": {
+                  "level": "info"
+            },
+            "ignoreTrailingSlash": true
+      },
+      "ajv": {
+            "customOptions": {
+                  "allErrors": true,
+                  "jsPropertySyntax": false,
+                  "keepErrors": false,
+                  "singleError": true,
+                  "coerceTypes": true
+            }
+      },
+      "helmet": {
+            "framegaurd": {
+                  "action": "deny"
+            }
+      },
+      "serverID": "ServerHandler",
+      "writableResource": true,
+      "pluginsEnable":{
+            "usermanagement" :true,
+            "statuschecks" :true,
+            "resources" :true,
+            "credentials" :true,
+            "jobs" :true,
+            "ui" :true,
+            "DB" :true,
+            "UtilSentiment" :true,
+            "UtilFuzzy" :true,
+            "UtilEcho" :true,
+            "IOTRedis" :true,
+            "IOTKafka" :true,
+            "FileSFTP" :true,
+            "ScriptShell" :true,
+            "ScriptSSH" :true,
+            "ScriptJS" :true,
+            "IOTProxy": true,
+            "Login": true
+      }
+}

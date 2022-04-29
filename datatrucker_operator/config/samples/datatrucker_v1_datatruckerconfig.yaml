@@ -1,0 +1,229 @@
+#
+# Copyright 2021 Datatrucker.io Inc , Ontario , Canada
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+apiVersion: datatrucker.datatrucker.io/v1
+kind: DatatruckerConfig
+metadata:
+  name: datatruckerconfig-sample
+spec:
+  TempDB:
+    enabled: false
+    pvc: samplepvc
+
+  DB:
+    user: testuser
+    password: password
+    databasename: userdb
+    hostname: db
+    type: pg
+    port: 5432
+
+
+  API:
+    name: API
+    cryptokeys:
+      publicJWTkey: "LS0tLS1CRUdJTiBQVUJMSUMgS0VZLS0tLS0NCk1JSUJJVEFOQmdrcWhraUc5dzBCQVFFRkFBT0NBUTRBTUlJQkNRS0NBUUJVZ3VkM3U4WVdxQkJZa1hnczYrbmkNCjEvOG5zOWI0RjZGbncwOEQ0SnRkZWpYOS9WWjJYV05qYnV6QzFSREcydWx4UzhCNkh1Nlh4SFhZT1dTZnM4RjQNClB2dngvU1FnZkVrVlJTQy9aUDd6czNWRE5ZWjBzUlJwM1JnNTNrb2pQbzRPejZrMVp4amtsVEVkSkxZS2piVm4NCnd1NTNwNzExbFUyZFdweEd1RHhmMVUyblFoK1hpSEpmSHJSbFNlUDVpWFhCSnF3bVVMMWQrbmVNTkE5eUZqRHQNCjJzWTBuYkg0ckg1cW5NVUZOMTBKbGd1eDRXYlNoYVQ2SU03eHV1RUdsNENyRUQ2Z1N6ME00YXVRWTh6RnFBbEkNCjZRVlE5TC9vM0JwQkZsWFFDMFpqMG95cEFRSi9DVUtpT0VwSEtEeCtqbTZFT0o4TVp6OUxDTXJOZ0swTkpJaVoNCkFnTUJBQUU9DQotLS0tLUVORCBQVUJMSUMgS0VZLS0tLS0="
+      privateJWTkey: "LS0tLS1CRUdJTiBSU0EgUFJJVkFURSBLRVktLS0tLQ0KTUlJRW9RSUJBQUtDQVFCVWd1ZDN1OFlXcUJCWWtYZ3M2K25pMS84bnM5YjRGNkZudzA4RDRKdGRlalg5L1ZaMg0KWFdOamJ1ekMxUkRHMnVseFM4QjZIdTZYeEhYWU9XU2ZzOEY0UHZ2eC9TUWdmRWtWUlNDL1pQN3pzM1ZETllaMA0Kc1JScDNSZzUza29qUG80T3o2azFaeGprbFRFZEpMWUtqYlZud3U1M3A3MTFsVTJkV3B4R3VEeGYxVTJuUWgrWA0KaUhKZkhyUmxTZVA1aVhYQkpxd21VTDFkK25lTU5BOXlGakR0MnNZMG5iSDRySDVxbk1VRk4xMEpsZ3V4NFdiUw0KaGFUNklNN3h1dUVHbDRDckVENmdTejBNNGF1UVk4ekZxQWxJNlFWUTlML28zQnBCRmxYUUMwWmowb3lwQVFKLw0KQ1VLaU9FcEhLRHgram02RU9KOE1aejlMQ01yTmdLME5KSWlaQWdNQkFBRUNnZ0VBRTBMMnNLSjZob1Z0bkZJag0KZXRHV01CNmN5QmJFSXkxM215ZTNwYUdXcDVxSUhjaVU0VXR0c0tjQ2pYRjBibTVNa0liOGFwa01Oa2tQdHVWMQ0KMnJSa254eHozZmFkT2s0NWRnQ1ljeWI0dU9DcEZGVnB2TVR6YXlGNk9RNUNCWUJuYmxiRU1TaTdVclh5U0xzcQ0KUm9OLzJoTml1S0RobktBWDNZcGVYZnYxdnIyaWIrMGtiRDVvMVZLcnB6SlJ5emlsWHFwQWJwNDQ4RExFZHVGeA0KTnJKc0tWb1dXMVhmS1FvR2VDMXZqNFJudzdhWkNyU1BjMEhvMUdKb29xSXlrNjRXZnhGWjhpVElsWDJMU1gzbQ0KQm1pN1ZXZnVJK0QvUXRtWEVpN05oTE1jUmExVXB4QkdiK1ZPZXlucEVyMEpxM3VZSmlva1VIZzloOGIzSDM1Yg0KK0lJaEFRS0JnUUNtbzUrRUNpOEJUcFRHdlpqQXBtdmxGZ055NkpWd0RvVHJLSGdCcHJHVHpsVGt6Q0tLYzJhTw0KTTMvQmVIVUQ1NVFqcTdUM094eGgzQUk3cG9kT0tCWS84eXgzenlYUExQUmVCMlR0eTNVQjE5YU5CclhNUGQ5RQ0KTG5hbUQ0SmZQeTV0WHpWWEloWVB0UzBiNjdGbjZnZFl4MlNBbGFYYWFjejU4eURLZnlZL3VRS0JnUUNCMUxNYg0KTFZNTU1Pd1U4R2xsVVB1V0Q5VnBsMnlURytCN2Nnd0ZiYTlrWVlVSFQ4TmlvaUdxQzlLZWxqeklKNnlUdyt3aA0KQisvNGNJU1o5Y0JDNHB0VnRlTWJwUkg3UTQwK20xU3M1SmQzU1VFcDBMOW5VbmdVNDhrMzlpSTV5aEgxU3JTRw0KREtBamVka2Rjb3hNVWFwUHB6cVprOVNKdGVHckVsTHY5WmcvNFFLQmdHcExQTmt3MWNMenFSc01uWDlscUxVOA0KVVg3ZXRWUUJMdkFCcEdzSk5ZU2V2TEFsTm5NeUlWemJwTVo0Vzh2ZDBEVGd0bEp0dGpFRjhiYXpCdVBuMWlsOA0KcUFUVWNiMnhZejhIWUczK3RlZ3pFWHhycDFOY3RDbjlxVmxMMDFHR0w4czhTLzRFbENYNDM0bEwwcUlDT2lWNw0KS3JTS3dIeU51RjVIbzhjSFRCS2hBb0dBVjhVRVpENEs0N1g3RTlqSFY3QWN0UUQxUkpJUzI0ekFBSlJFSGpOZA0KbkIzMVFkRWhoSCtaQkkxRGtPUitLTTN4ZEYvQ05UNVpjM29WbXNPeGUwWVl2eVBjYWViNU5nVWY2cEExK1QvOA0KU2E4ak4zS2d3dWZVdUVLWjJKUXo1UjkvYm5WWGZ6dnYwcXZnSkhFNCthdEgyTnR6MlRsQU9PelZwOElXZ1pSbA0KbmVFQ2dZQXpVS0RLS1ZKaXBYdC9TRC8xd2ZzWElCazFxYWpmdENHOFVTcFlGWGp5VzVYMlZ5bTlVTldmVEdJcA0KQlJkVldXamdFbWhyOU5Da1UrVEU4WEVjTXJNRnhWbXBEeTQ4YmxsQWltWFJtOEhNMlhKODQ4TlArTG5GdEtHdA0KTWswT3JuUHdPYitualZGcXdWUllNQ0QzeFN0Z2RnZUppUHFYcWd3SDhjR0M0OGVmZ0E9PQ0KLS0tLS1FTkQgUlNBIFBSSVZBVEUgS0VZLS0tLS0="
+      truckerapicrt: "LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUQxVENDQXIyZ0F3SUJBZ0lVUFVzZ2NYVXZRYWtuQldjeUFDeEw2dmt3b204d0RRWUpLb1pJaHZjTkFRRUwKQlFBd2RqRUxNQWtHQTFVRUJoTUNRMEV4Q3pBSkJnTlZCQWdNQWs5T01ROHdEUVlEVlFRSERBWk5hV3gwYjI0eApGekFWQmdOVkJBb01Ea1JoZEdGVWNuVmphMlZ5TGtsUE1SUXdFZ1lEVlFRTERBdEZibWRwYm1WbGNtbHVaekVhCk1CZ0dBMVVFQXd3UlJHRjBZVlJ5ZFdOclpYSlNiMjkwUTBFd0hoY05NakF4TURFeU1UWXlOalV5V2hjTk1qTXcKTVRFMU1UWXlOalV5V2pCM01Rc3dDUVlEVlFRR0V3SkRRVEVMTUFrR0ExVUVDQXdDVDA0eER6QU5CZ05WQkFjTQpCazFwYkhSdmJqRVhNQlVHQTFVRUNnd09SR0YwWVZSeWRXTnJaWEl1U1U4eEZEQVNCZ05WQkFzTUMwVnVaMmx1ClpXVnlhVzVuTVJzd0dRWURWUVFEREJKa1lYUmhkSEoxWTJ0bGNpMWhjR2t1YVc4d2dnRWlNQTBHQ1NxR1NJYjMKRFFFQkFRVUFBNElCRHdBd2dnRUtBb0lCQVFEakM4ZmVCVEg4L3NnejFQcTJQYU9QQjc5YWtyeUZvWVpGV292bQpWOXNvMmJNRHp4NVBZSFJydVFGYmJQRzlVVlc2QWZpSHdEb1p2Z3NTVXpyS3ZyR1RlYjluNUhSVlVOMTl0NExTCjdtUFppNzFRbGE4bVR3QmdvTnE4TFppcnZUdzV0S2I4K3NmcFJxQUlUQkVsRmxVUEZISzllcDl2eFdvaHhwdGgKS1dPVkwvV2ZtWldhWXlRdjlLNDBkWUJpRWpGcTFKZVB4MDlnUFdHM2pOT1VYTTZQUVlMaHJDUXFFcy9VME9GWQpwVFRHUmNXZEx4TFVFZVNkcHJKK1ZEc3lEK1lVeUFRR2phYk14VmVTVlRUN1FGbFBjLzc3OVZsRkdXMC8xWVVaCmpqakNsSkFLUWZOTHg5bG85cWJERVBZL3grZmhnRnYyWUVaSTNTdGVyZWUvVDJoWEFnTUJBQUdqV2pCWU1COEcKQTFVZEl3UVlNQmFBRkNJVy9JYkZIUUNBeEdxZC9FVFpXbVhGeGMvQ01Ba0dBMVVkRXdRQ01BQXdDd1lEVlIwUApCQVFEQWdUd01CMEdBMVVkRVFRV01CU0NFbVJoZEdGMGNuVmphMlZ5TFdGd2FTNXBiekFOQmdrcWhraUc5dzBCCkFRc0ZBQU9DQVFFQUxrMlJDbnVweDA5Wmx0SmN3M1pUaFIveUZGNS9KVlVsWkdHTnc3MlAwQmR6SEloQncrVk4KRkNucGFPMjJ0WGF1NlJVeTVNUWhwc3JrbFNKYVdJT25jOUg0Uk0vbGh3YWsyRXN0MkFhdUFwNUdYSVFJMDVBeAo3NmtDZXEyMnUyalNXRWpFS1hGRnRiZXVDZnFpWlpqNWFLcGF1YlZWRG4ydEZTWjJRMFRib2RRN2dpTFdNUTBLCk5ycVgwQWNSU2J0ZnRSNjBhdGQ1YW41aFNXY0dyZUg5ZHdFUVRvVVNFblg2RFRZSURoeElsZStjQ2V5VjVSWk8KVS9hck5RZ0lFY3ZrZUM1d1lZaFFFL1FUN3lNb1lNajFnckxmOTZSZkRhbEVFNE1seUtDWm9wYWNJWUdzSmhuKwpLMWFISEQvbGZxTC9zbnNtY3pXdHlLUncxTDF1WkxPcjJnPT0KLS0tLS1FTkQgQ0VSVElGSUNBVEUtLS0tLQo="
+      truckerapikey: "LS0tLS1CRUdJTiBSU0EgUFJJVkFURSBLRVktLS0tLQpNSUlFb3dJQkFBS0NBUUVBNHd2SDNnVXgvUDdJTTlUNnRqMmpqd2UvV3BLOGhhR0dSVnFMNWxmYktObXpBODhlClQyQjBhN2tCVzJ6eHZWRlZ1Z0g0aDhBNkdiNExFbE02eXI2eGszbS9aK1IwVlZEZGZiZUMwdTVqMll1OVVKV3YKSms4QVlLRGF2QzJZcTcwOE9iU20vUHJINlVhZ0NFd1JKUlpWRHhSeXZYcWZiOFZxSWNhYllTbGpsUy8xbjVtVgptbU1rTC9TdU5IV0FZaEl4YXRTWGo4ZFBZRDFodDR6VGxGek9qMEdDNGF3a0toTFAxTkRoV0tVMHhrWEZuUzhTCjFCSGtuYWF5ZmxRN01nL21GTWdFQm8ybXpNVlhrbFUwKzBCWlQzUCsrL1ZaUlJsdFA5V0ZHWTQ0d3BTUUNrSHoKUzhmWmFQYW13eEQyUDhmbjRZQmI5bUJHU04wclhxM252MDlvVndJREFRQUJBb0lCQUZSbFo2aiswMk1RcmdpZQpUWWQ2aUJhOXNZS1FjdVZWY2x6TFdKK0ozdHhqZCtpZGo4Mi9zK2JyQVRjajJ3UWRmTGxFekVaaHpQY09ybnprClZVRlIreDR2cmxlSEV6czNjTzJ2VGtEci9rKzZZdWZXakNHNFVoS1pHRlhFdVRCMWlqS0ZGV0dLTXM5aXdrL3oKUHBoRG9lQ1dJRVNRbFQxdDY1S2NpZHRuRUM0K3oxaURxR21ZZEVEa2xEZFFIVHorRGpseS80VzV2MFpVQWN2Vwo1Unkvd0JldmNURlBXQy9uZGFrN3hGUnVrU2xNZUlhTWhvTlllOU5uVCt2Nmh5VVh1MXp6cG45UEFJRTVpQWpOCnBsZkFEZitwakwrZFJDbW9sWW1LR3NQVjEzSmtCY1p2cEVoUWgrUmJnaWFwczJLc2plQ0NmTmtST0hndHc0MU0KeGxOTU1Ha0NnWUVBOHM1akpuZ2FMblIvTzZtakZEb0wvd1p2UWdnT1h3Z1RBN2tsQ0trbjBYM0xJS0hhaTZESgpyOVRGQktMdkhUazVFK1Y4NkhIZ29VMUFQQnYyMWJpaHhuQXhUYm8wSHZMdG5QOXU3YnZJejFNOWMyd2ZlWUgzCmliMG1FNkV0Y2wvNnVIUHdMVlZtRGh5bllneEZpeTRRRXp1ZHZwaFIvSnlPazQvUytQUzh2ZXNDZ1lFQTcySW8KWDlkY0xvUmYzSk0vRTF1SXhrRGRLZm1VakN6Mk1NN3pyRkpNUERobTFSUlJhQjdidHNxUzl4Mm5KeTI5amtoSQpndTR0Y2s5STdncm9WRXY0cEtkU0lOVzVNVUg0MXJPckxTbFBobCtMaTM5QXNrTERFVXVQbkFmYko3YWZibFFHCjNFWE1Ka1d2WFQxRG90aE11MUpUMTFPMjhmYlBmb3R3YVRucXFFVUNnWUE1RnArblh0dkJDbkVUNVJuTDJxNFIKWTBEcmhKdGthckNWMG9WTG1RSWN0bmY1RHpVa1dVU3lpOU5hK0xoQjViOXUxeWxjT2RJMytzTGNuektWSTVrZAo0Q2tuZmwxYzNYOVN4NWdjVzJlbW40cTJSYmpNeCtzY3ZwVmlUaVl5V3pESEI3Tno1VDFlbWd3YytJZXRac0l1CjAzaU9aSi82UmhFYnp0Z3E0dGd4eXdLQmdCanhwSDFnSm9YZVcxTFRzUlhtU3RsRnR3WUJzTDN1alhUR2k5T2YKKzd1bXNPaHhKbzV2OExzYVhyZ0xTZmltSm9ObCt0QlIyMEIzRElWcGM0NGRJSHFmeU1vTkd6QUx6TThxaDZLOApGRUpQUUc0M3cxa1A1ZDJ1ZnZkbVJpcmNONzY2V01DcE1UMm5zejlHKy81REJiUGJQMHRIdU45N3RXRmRURWhhCnRaMzFBb0dCQU5xZnVycEV4ZHozdXRNUm91RnJjTmVkV2s4VlVpVVZIV1hZMjhNNWQvRjcxMExIOTZuOW12V08Kc1cwcDFjcXBJMEsyQko2WlYwNVpybnlyRHBsVVpVdVpSQWxGR3hYR1dLU2trQzlmWm90SkFOWDBkR29KSitqTwpEYUNLNGxlcXdOMHNPRE1YZFErMlFPaUtlSUxkNU5KcDNUSW1YV1Z0RFlXUkRwOW9iSUdlCi0tLS0tRU5EIFJTQSBQUklWQVRFIEtFWS0tLS0tCg=="
+      keycloakkey: "LS0tLS1CRUdJTiBQVUJMSUMgS0VZLS0tLS0KTUlJQklqQU5CZ2txaGtpRzl3MEJBUUVGQUFPQ0FROEFNSUlCQ2dLQ0FRRUF4ZnhGY1gxb3RmTUN6SWlkZ09tMndZakZWZXZHN1BQT1h5dTNrTEFuTWtTVkUxUXl4TzJ4SFFvSGcydDFVcUU4SVNXeTN3ZkZTbERzdU1VK0J1VVkvaWI5L04vSlpBV3k5MGRET0YxREdIeGVwM21HMVBTUllMQWFGQ0I3NTVsbWZjL1dna3VzZFdLdmxOTmZuNkd6S1J6OXBmV3RNUnhWWkFrejhmNlVUeG0zWE02Q0tOMUludThubEcxU3ZzaFc5cmt3Lyt6UmVvOFVCV2pPcTh5RjdPV0tnS0ZZZlhENFREa090OWFxN3RaaSsxaExYOE5iV2xxRnJZYmhJcFZINXlLSko3ZTA5cUVIRkVEelg5QXJzVVNHamNjbFFFYTl1dmJxU2d4Rzc3RUZVbk82aDZxUkNnU3lNNnVYdk9qcWlIMHp4RTNmRHB4R2NhY2pvTW1EMlFJREFRQUIKLS0tLS1FTkQgUFVCTElDIEtFWS0tLS0t"
+    crypto: 
+      passwordHash:
+        Algorithm: sha256
+        SaltLength: 16
+      JWT:
+        signOptions:
+          expiresIn: 60m
+          algorithm: RS256
+          issuer: datatrucker
+        verify:
+          issuer: datatrucker
+        authorization_keys:
+          public_key: publicJWT.key
+          private_key: privateJWT.key
+      CredentailEncryption:
+        IV: eThWmZq4t7w!z$C&
+        Key: JaNdRgUkXp2s5u8x/A?D(G+KbPeShVmY
+        Algorithm: aes-256-cbc
+      keycloak:
+        realm: TestRealm
+        client_id: nodejs
+        url: http://localhost:30015
+        client_secret: 7c5542ae-7264-420d-bf5f-766f4ab39ad3
+        jwt_publickey_verifier: keycloak.key
+
+    resource: 
+        Templates:
+          Scripts: scripts
+          Shell: shell
+          resourcedefinitions: resourcedefinitions
+          keys: keys
+        Cache:
+          Resource: false
+          Creds: false
+          ResourceFlush: 10
+          CredsFlush: 10
+
+
+    loginServer: 
+      bind: 0.0.0.0
+      port: '8080'
+      protocol:
+        type: http
+        http2: false
+        httpsconfig:
+          allowHTTP1: true
+          cert: truckerapi.crt
+          key: truckerapi.key
+      keycloak: true
+      jobResponseErrors: true
+      requestLog: false
+      compression:
+        threshold: 2048
+      fastify:
+        logger: 
+          level: 'info'
+        ignoreTrailingSlash: true
+      ajv:
+        customOptions:
+          allErrors: true
+          jsPropertySyntax: true
+          keepErrors: false
+          singleError: true
+          coerceTypes: true
+      helmet:
+        framegaurd:
+          action: deny
+      serverID: ServerHandler
+      writableResource: false
+      pluginsEnable:
+        usermanagement: false
+        statuschecks: true
+        resources: false
+        credentials: false
+        jobs: false
+        ui: false
+        DB: false
+        UtilSentiment: false
+        UtilFuzzy: false
+        UtilEcho: false
+        IOTRedis: false
+        IOTKafka: false
+        FileSFTP: false
+        ScriptShell: false
+        ScriptSSH: false
+        ScriptJS: false
+        IOTProxy: false
+        Login: true
+    
+    managementServer: 
+      bind: 0.0.0.0
+      port: '8080'
+      protocol:
+        type: http
+        http2: false
+        httpsconfig:
+          allowHTTP1: true
+          cert: truckerapi.crt
+          key: truckerapi.key
+      keycloak: true
+      jobResponseErrors: true
+      requestLog: false
+      compression:
+        threshold: 2048
+      fastify:
+        logger: 
+          level: 'debug'
+        ignoreTrailingSlash: true
+      ajv:
+        customOptions:
+          allErrors: true
+          jsPropertySyntax: true
+          keepErrors: false
+          singleError: true
+          coerceTypes: true
+      helmet:
+        framegaurd:
+          action: deny
+      serverID: ServerHandler
+      writableResource: false
+      pluginsEnable:
+        usermanagement: true
+        statuschecks: true
+        resources: false
+        credentials: true
+        jobs: false
+        ui: true
+        DB: false
+        UtilSentiment: false
+        UtilFuzzy: false
+        UtilEcho: false
+        IOTRedis: false
+        IOTKafka: false
+        FileSFTP: false
+        ScriptShell: false
+        ScriptSSH: false
+        ScriptJS: false
+        Login: true      
+
+    jobsServer: 
+      bind: 0.0.0.0
+      port: '8080'
+      protocol:
+        type: http
+        http2: false
+        httpsconfig:
+          allowHTTP1: true
+          cert: truckerapi.crt
+          key: truckerapi.key
+      keycloak: true
+      jobResponseErrors: true
+      requestLog: false
+      compression:
+        threshold: 2048
+      fastify:
+        logger: 
+          level: 'debug'
+        ignoreTrailingSlash: true
+      ajv:
+        customOptions:
+          allErrors: true
+          jsPropertySyntax: true
+          keepErrors: false
+          singleError: true
+          coerceTypes: true
+      helmet:
+        framegaurd:
+          action: deny
+      serverID: ServerHandler
+      writableResource: false
+      pluginsEnable:
+        usermanagement: false
+        statuschecks: true
+        resources: false
+        credentials: false
+        jobs: true
+        ui: false
+        DB: true
+        UtilSentiment: true
+        UtilFuzzy: true
+        UtilEcho: true
+        IOTRedis: true
+        IOTKafka: true
+        FileSFTP: true
+        ScriptShell: true
+        ScriptSSH: true
+        ScriptJS: true
+        Login: false  

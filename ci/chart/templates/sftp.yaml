@@ -1,0 +1,29 @@
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: sftp
+  labels:
+    name: sftp
+spec:
+  containers:
+  - name: sftp
+    image: docker.io/atmoz/sftp
+    ports:
+    - containerPort: 22
+    args:
+    - foo:pass:::upload
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: sftp
+spec:
+  type: NodePort
+  selector:
+    name: sftp
+  ports:
+    - port: 22
+      targetPort: 22
+      nodePort: 30006

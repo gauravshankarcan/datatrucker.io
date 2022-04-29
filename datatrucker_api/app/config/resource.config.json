@@ -1,0 +1,14 @@
+{
+      "Templates": {
+            "Scripts": "scripts",
+            "Shell": "shell",
+            "resourcedefinitions": "resourcedefinitions",
+            "keys": "keys"
+      },
+      "Cache": {
+            "Resource": false,
+            "Creds": false,
+            "ResourceFlush": 3,
+            "CredsFlush": 3
+      }
+}

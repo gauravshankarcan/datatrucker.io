@@ -1,0 +1,100 @@
+{
+      "/chains": {
+            "trucker-page-title": "Create A Chain",
+            "trucker-page-info": "Build Chains (Advanced)",
+            "trucker-page-searchtableheading": "Get List of All APIs Stored",
+            "trucker-page-createtableheading": "Connect Multiple APIs to a single chain (Advanced)",
+            "createapi": "resources",
+            "deleteapi": "resources",
+            "deleteid": "filename",
+            "getapi": "resources",
+            "searchapi": "resources?type=Chain",
+            "searchcolumns": [
+                  {
+                        "field": "restmethod",
+                        "title": "Method"
+                  },
+                  {
+                        "field": "tenant",
+                        "title": "Tenant"
+                  },
+                  {
+                        "field": "resourcename",
+                        "title": "Resource Name"
+                  },
+                  {
+                        "field": "filename",
+                        "title": "Filename"
+                  }
+            ],
+            "create": [
+                  {"field": "resourcename", "placeholder": "Resource Name", "type": "text", "locked": false},
+                  {"field": "restmethod", "placeholder": "Method", "type": "dropdown", "locked": false, "values": ["GET", "POST", "PUT", "DELETE", "PATCH"],
+                        "defaultValue": "GET"},
+                  {
+                        "field": "chain",
+                        "placeholder": "Chain Definition",
+                        "type": "jsonarea",
+                        "locked": false,
+                        "defaultValue": [
+                              {
+                                "stub": "sentiment2",
+                                "method": "POST",
+                                "datacontent": {
+                                  "statement": "$request|$.msg"
+                                },
+                                "register": "sentimentresult"
+                              },
+                              {
+                                "stub": "echo1",
+                                "method": "GET",
+                                "datacontent": {
+                                  "message": "$sentimentresult|$.calculation",
+                                  "token": "$sentimentresult|$.tokens" 
+                                }
+                              }
+                            ]
+                  },
+                  {"field": "type", "placeholder": "Type", "type": "text", "locked": true, "defaultValue": "Chain"}
+            ]
+      },
+
+      "/block": {
+            "trucker-page-title": "Create A Block",
+            "trucker-page-info": "Build A Block",
+            "trucker-page-searchtableheading": "Get List of All Block APIs Stored",
+            "trucker-page-createtableheading": "Build a loop or conditional execution",
+            "createapi": "resources",
+            "deleteapi": "resources",
+            "deleteid": "filename",
+            "getapi": "resources",
+            "searchapi": "resources?type=Block",
+            "searchcolumns": [
+                  {
+                        "field": "restmethod",
+                        "title": "Method"
+                  },
+                  {
+                        "field": "tenant",
+                        "title": "Tenant"
+                  },
+                  {
+                        "field": "resourcename",
+                        "title": "Resource Name"
+                  },
+                  {
+                        "field": "filename",
+                        "title": "Filename"
+                  }
+            ],
+            "create": [
+                  {"field": "resourcename", "placeholder": "Resource Name ( Block path )", "type": "text", "locked": false},
+                  {"field": "restmethod", "placeholder": "Method", "type": "dropdown", "locked": false, "values": ["GET", "POST", "PUT", "DELETE", "PATCH"],
+                        "defaultValue": "GET"},
+                  {"field": "resourcelink", "placeholder": "Linked Resource Name to be triggered", "type": "text", "locked": false},
+                  {"field": "resourcelinkedmethod", "placeholder": "Linked Resource Method", "type": "dropdown", "locked": false, "values": ["GET", "POST", "PUT", "DELETE", "PATCH"],
+                        "defaultValue": "GET"},
+                  {"field": "type", "placeholder": "Type", "type": "text", "locked": true, "defaultValue": "Block"}
+            ]
+      }
+}

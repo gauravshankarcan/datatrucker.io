@@ -1,0 +1,233 @@
+{
+      "/script/sshscript": {
+            "trucker-page-title": "Create a command over SSH API",
+            "trucker-page-createtableheading": "SSH into a box and fire a command",
+            "createapi": "resources",
+            "deleteapi": "resources",
+            "deleteid": "filename",
+            "searchapi": "resources?type=Script-SSH",
+            "getapi": "resources",
+            "searchcolumns": [
+                  {
+                        "field": "restmethod",
+                        "title": "Method"
+                  },
+                  {
+                        "field": "tenant",
+                        "title": "Tenant"
+                  },
+                  {
+                        "field": "resourcename",
+                        "title": "Resource Name"
+                  },
+                  {
+                        "field": "filename",
+                        "title": "Filename"
+                  }
+            ],
+            "create": [
+                  {
+                        "field": "resourcename",
+                        "placeholder": "Resource Name",
+                        "type": "text",
+                        "locked": false
+                  },
+                  {
+                        "field": "credentialname",
+                        "placeholder": "Credential Name",
+                        "type": "text",
+                        "locked": false
+                  },
+                  {
+                        "field": "restmethod",
+                        "placeholder": "Method",
+                        "type": "dropdown",
+                        "locked": false,
+                        "values": ["GET", "POST", "PUT", "DELETE", "PATCH"],
+                        "defaultValue": "GET"
+                  },
+                  {
+                        "field": "type",
+                        "placeholder": "Type",
+                        "type": "text",
+                        "locked": true,
+                        "defaultValue": "Script-SSH"
+                  },
+                  {
+                        "field": "script",
+                        "placeholder": "Script",
+                        "type": "textarea",
+                        "locked": false,
+                        "defaultValue": "echo 123"
+                  },
+                  {
+                        "field": "validations",
+                        "placeholder": "Validations",
+                        "type": "jsonarea",
+                        "locked": false,
+                        "defaultValue": {
+                              "type": "object",
+                              "properties": {
+                                    "args": {
+                                          "type": "array",
+                                          "items": {
+                                                "type": "string",
+                                                "pattern": "^[-a-z0-9]*$",
+                                                "maxLength": 5
+                                          }
+                                    }
+                              }
+                        }
+                  }
+            ]
+      },
+      "/script/jsscript": {
+            "trucker-page-title": "Create JavaScript API",
+            "trucker-page-createtableheading": "Create a API out of a Javascript File",
+            "createapi": "resources",
+            "deleteapi": "resources",
+            "deleteid": "filename",
+            "searchapi": "resources?type=Script-JS",
+            "getapi": "resources",
+            "searchcolumns": [
+                  {
+                        "field": "restmethod",
+                        "title": "Method"
+                  },
+                  {
+                        "field": "tenant",
+                        "title": "Tenant"
+                  },
+                  {
+                        "field": "resourcename",
+                        "title": "Resource Name"
+                  },
+                  {
+                        "field": "filename",
+                        "title": "Filename"
+                  }
+            ],
+            "create": [
+                  {
+                        "field": "resourcename",
+                        "placeholder": "Resource Name",
+                        "type": "text",
+                        "locked": false
+                  },
+                  {
+                        "field": "restmethod",
+                        "placeholder": "Method",
+                        "type": "dropdown",
+                        "locked": false,
+                        "values": ["GET", "POST", "PUT", "DELETE", "PATCH"],
+                        "defaultValue": "GET"
+                  },
+                  {
+                        "field": "type",
+                        "placeholder": "Type",
+                        "type": "text",
+                        "locked": true,
+                        "defaultValue": "Script-JS"
+                  },
+                  {
+                        "field": "script",
+                        "placeholder": "Script",
+                        "type": "text",
+                        "locked": false,
+                        "defaultValue": "testscript.js"
+                  },
+                  {
+                        "field": "validations",
+                        "placeholder": "Validations",
+                        "type": "jsonarea",
+                        "locked": false,
+                        "defaultValue": {
+                              "type": "object",
+                              "properties": {
+                                    "number": {
+                                          "type": "integer"
+                                    }
+                              }
+                        }
+                  }
+            ]
+      },
+      "/script/shell": {
+            "trucker-page-title": "Create SHELL API",
+            "trucker-page-info": "Create,Delete SHELL API",
+            "trucker-page-createtableheading": "Create a wrapper for a Shell command or script API",
+            "trucker-page-Alert": "- Documentation : Shell APIs configurations\n- Note: Shell APIs executes commands in the server users context, this can essentially delete or view server configurations",
+            "createapi": "resources",
+            "deleteapi": "resources",
+            "deleteid": "filename",
+            "searchapi": "resources?type=Script-Shell",
+            "getapi": "resources",
+            "searchcolumns": [
+                  {
+                        "field": "restmethod",
+                        "title": "Method"
+                  },
+                  {
+                        "field": "tenant",
+                        "title": "Tenant"
+                  },
+                  {
+                        "field": "resourcename",
+                        "title": "Resource Name"
+                  },
+                  {
+                        "field": "filename",
+                        "title": "Filename"
+                  }
+            ],
+            "create": [
+                  {
+                        "field": "resourcename",
+                        "placeholder": "Resource Name",
+                        "type": "text",
+                        "locked": false
+                  },
+                  {
+                        "field": "restmethod",
+                        "placeholder": "Method",
+                        "type": "dropdown",
+                        "locked": false,
+                        "values": ["GET", "POST", "PUT", "DELETE", "PATCH"],
+                        "defaultValue": "POST"
+                  },
+                  {
+                        "field": "script",
+                        "placeholder": "Script",
+                        "type": "textarea",
+                        "locked": false,
+                        "defaultValue": "echo 123"
+                  },
+                  {
+                        "field": "validations",
+                        "placeholder": "Validations",
+                        "type": "jsonarea",
+                        "locked": false,
+                        "defaultValue": {
+                              "type": "object",
+                              "properties": {
+                                    "args": {
+                                          "type": "array",
+                                          "items": {
+                                                "type": "string",
+                                                "pattern": "^[-a-z0-9]*$",
+                                                "maxLength": 5
+                                          }
+                                    }
+                              }
+                        }
+                  },
+                  {
+                        "field": "type",
+                        "placeholder": "Type",
+                        "type": "text",
+                        "locked": true,
+                        "defaultValue": "Script-Shell"
+                  }
+            ]
+      }
+}

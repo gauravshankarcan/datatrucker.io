@@ -1,0 +1,119 @@
+#
+# Copyright 2021 Datatrucker.io Inc , Ontario , Canada
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+
+
+
+- name: create a ui-config
+  community.kubernetes.k8s:
+    state: present
+    definition: 
+      apiVersion: v1
+      kind: ConfigMap
+      metadata:
+        name: '{{ ansible_operator_meta.name }}-ui'
+        namespace: '{{ ansible_operator_meta.namespace }}'
+      data:
+        .env: |
+            REACT_APP_APIURL=http://{{ ansible_operator_meta.name }}
+            UI_PORT=9080
+            UI_BIND=0.0.0.0
+            HTTP_MODE=http
+            HTTPS_KEY=http.key
+            HTTPS_CERT=http.cert
+            NODE_ENV=production
+
+
+
+- name: create a ui deployment
+  community.kubernetes.k8s:
+    state: present
+    definition:
+        kind: Deployment
+        apiVersion: apps/v1
+        metadata:
+          name: '{{ ansible_operator_meta.name }}-ui'
+          namespace: '{{ ansible_operator_meta.namespace }}'
+          labels:
+            name: '{{ ansible_operator_meta.name }}-ui'
+            namespace: '{{ ansible_operator_meta.namespace }}'
+            cleanup: trucker
+            function: login
+        spec:
+          replicas: '{{ Replicas  }}'
+          selector:
+            matchLabels:
+              name: '{{ ansible_operator_meta.name }}-ui'
+              namespace: '{{ ansible_operator_meta.namespace }}'
+          template:
+            metadata:
+              labels:
+                name: '{{ ansible_operator_meta.name }}-ui'
+                namespace: '{{ ansible_operator_meta.namespace }}'
+            spec:
+              containers:
+              - name: datatrucker-ui
+                resources: '{{ Resources }}'
+                image: "{{ API.Image.repository }}/{{ API.Image.imageNameUI }}:{{ API.Image.tagName }}"
+                volumeMounts:
+                - name: config-volume
+                  mountPath: /usr/src/app/.env
+                  subPath: .env         
+                  readOnly: true
+                ports:
+                - containerPort: 9080
+                  protocol: TCP
+                imagePullPolicy: Always
+              restartPolicy: Always
+              terminationGracePeriodSeconds: 62
+              dnsPolicy: ClusterFirst
+              volumes:
+              - name: config-volume
+                configMap:
+                  name: "{{ ansible_operator_meta.name }}-ui"
+          strategy:
+            type: RollingUpdate
+            rollingUpdate:
+              maxUnavailable: 1
+              maxSurge: 1        
+
+
+
+- set_fact:
+    JOBSERVICEENTRY: |
+      kind: Service
+      apiVersion: v1
+      metadata:
+        name: '{{ ansible_operator_meta.name }}-ui'
+        namespace: '{{ ansible_operator_meta.namespace }}'
+        labels:
+          name: db
+          cleanup: trucker
+      spec:
+        ports:
+        - protocol: TCP
+          port: 80
+          targetPort: 9080
+        selector:
+          name: '{{ ansible_operator_meta.name }}-ui'
+          namespace: '{{ ansible_operator_meta.namespace }}'
+        type: ClusterIP
+        sessionAffinity: None   
+
+
+- name: create a service
+  community.kubernetes.k8s:
+    state: present
+    definition: "{{ JOBSERVICEENTRY | from_yaml }}"
