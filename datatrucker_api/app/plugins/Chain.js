@@ -61,8 +61,9 @@ module.exports = fp(async (f, opts, done) => {
         var finaldata
         for (const joblet of template.chain) {
             try {
-                f.log.trace("Translating:  "+joblet.datacontent,)
+                f.log.trace("Translating:  "+joblet.datacontent)
                 request.datacontent = nextkey(joblet.datacontent,request.id)
+                f.log.trace("Translated:  "+request.datacontent)
                 request.template = await f.ResourceConfig(request.user, joblet.stub, joblet.method);
                 finaldata = await f[request.template.type](request);
                 if (typeof joblet.register !== 'undefined') {
