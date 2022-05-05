@@ -20,7 +20,10 @@ const cryptoconfig = require('../config/crypto.config.json');
 const fetch = require('node-fetch');
 const jwt = require('jsonwebtoken');
 const fs = require('fs');
-
+const https = require("https");
+const agent = new https.Agent({
+  rejectUnauthorized: false
+});
 // Hashing for passwords stored in database
 const ENCRYPTION_TYPE = cryptoconfig.passwordHash.Algorithm;
 const SALT_LENGTH = cryptoconfig.passwordHash.SaltLength;
@@ -107,16 +110,22 @@ module.exports = fp((f, opts, done) => {
                   cryptoconfig.keycloak.realm+
                   '/protocol/openid-connect/token'
 
-            var groups= []      
-
+            var groups= []  
+            
+            
+            f.log.trace(URL)
+            f.log.trace(formBody)
             const response = await fetch(URL
                   , {
                   method: 'POST',
                   headers: {
                   'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8'
                   },
-                  body: formBody
+                  body: formBody,
+                  agent: agent
             })
+            f.log.trace("keycloak response")
+            f.log.trace(response)
             const data = await response.json();
             
             
