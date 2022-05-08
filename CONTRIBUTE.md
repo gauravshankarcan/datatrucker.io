@@ -3,7 +3,7 @@
 ## Building your environment locally
 
 ### Prerequisites 
-- docker environment required
+- minikube environment required
 - docker login required to docker hub 
 - nodejs environment
 - postman
@@ -18,4 +18,13 @@
 
 - login to dockerhub , you may need to register for oracle database images , depending on what you are doing
 - switch to the ci folder
-- run docker-setup.sh
+- make sure minikube is running  
+- run setup-minikube.sh to build a test environment
+
+### Branch merges
+ All codes needs to go into there own new branch and integrate first in develop branch .. The administrators will test the branch before pushing to main to make a release
+ - No direct pushes to develop or main
+ - All merges to develop branch should be tested by the code committer
+
+### getting started
+https://www.datatrucker.io/docs/Overview/Getting%20Started
