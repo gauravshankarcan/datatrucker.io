@@ -53,7 +53,7 @@ async function resourceSearch(request, reply) {
 }
 
 async function resourceSearchFile(request, reply) {
-      const filename = jobdefinitions + request.params.filename;
+      const filename = jobdefinitions + request.params.filename+'.json';
       if (request.params.filename.split('-')[1] === request.user.payload.ten) {
             const data = JSON.parse(await fs.readFile(filename, 'utf8'));
             reply.send(reply.replyHandler(data, request.id));

@@ -72,7 +72,7 @@
                         "ico": "DeveloperModeOutlinedIcon"
                   }
             },
-            "Build Chains and Blocks": {
+            "Build Chains": {
                   "Chains APIs": {
                         "redirect": "/chains"
                   },

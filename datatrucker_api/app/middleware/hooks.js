@@ -60,8 +60,9 @@ module.exports = fp((f, opts, done) => {
       }
 
       function preJobHandler(request) {
-            if (request.raw.method === 'GET' || request.raw.method === 'DELETE') request.datacontent = request.query;
-            else request.datacontent = request.body;
+            var datacontent = {};
+            if (request.raw.method === 'GET' || request.raw.method === 'DELETE') request.datacontent = {...datacontent,...request.query};
+            else request.datacontent = {...datacontent,...request.body}
       }
 
       function replyHandler(responsedata, id) {

@@ -1,4 +1,4 @@
-FROM node:latest
+FROM node:lts
 
 LABEL "datatrucker"="api"
 
@@ -6,9 +6,9 @@ WORKDIR /usr/src/app
 
 COPY ./app .
 RUN npm install && \
-    npm install -g knex
-
-RUN chgrp -R 0 /usr/src/app && \
+    npm install -g knex && \
+    npm config set strict-ssl false && \
+    chgrp -R 0 /usr/src/app && \
     chmod -R g=u /usr/src/app
 
 EXPOSE 8080

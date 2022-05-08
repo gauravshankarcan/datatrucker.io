@@ -6,11 +6,11 @@ metadata:
     capabilities: Full Lifecycle
     categories: Integration & Delivery
     certified: "false"
-    containerImage: docker.io/datatruckerio/datatrucker-operator:1.3.2
+    containerImage: docker.io/datatruckerio/datatrucker-operator:2.0.0
     createdAt: "2021-09-08 01:01:01"
     repository: hhttps://gitlab.com/datatruckerio/datatrucker-server.git
     support: Community
-  name: datatrucker-operator.v1.3.2
+  name: datatrucker-operator.v2.0.0
   namespace: placeholder
 spec:
   apiservicedefinitions: {}
@@ -76,7 +76,7 @@ spec:
                 - --v=10
                 env:
                 - name: OPERATOR_CONDITION_NAME
-                  value: datatrucker-operator.v1.3.2
+                  value: datatrucker-operator.v2.0.0
                 image: gcr.io/kubebuilder/kube-rbac-proxy:v0.5.0
                 imagePullPolicy: Always
                 name: kube-rbac-proxy
@@ -95,8 +95,8 @@ spec:
                 - name: ANSIBLE_GATHERING
                   value: explicit
                 - name: OPERATOR_CONDITION_NAME
-                  value: datatrucker-operator.v1.3.2
-                image: docker.io/datatruckerio/datatrucker-operator:1.3.2
+                  value: datatrucker-operator.v2.0.0
+                image: docker.io/datatruckerio/datatrucker-operator:2.0.0
                 imagePullPolicy: Always
                 name: manager
                 resources: {}
@@ -135,5 +135,5 @@ spec:
   provider:
     name: DataTrucker.IO
     url: https://www.datatrucker.io/
-  replaces: datatrucker-operator.v1.3.1
-  version: 1.3.2
+  replaces: datatrucker-operator.v1.3.2
+  version: 2.0.0
