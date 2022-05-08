@@ -14,7 +14,7 @@
 * limitations under the License.
 */ 
 
-const schemaFilename ={type: 'string', minimum: 4, pattern: '^[A-Z]+-[A-Za-z0-9]+-[a-z0-9]+.json$'}
+const schemaFilename ={type: 'string', minimum: 4, pattern: '^[A-Z]+-[A-Za-z0-9]+-[a-z0-9]+$'}
 const schemaType ={ type: 'string',
                   enum: [
                         'DB-Postgres',
