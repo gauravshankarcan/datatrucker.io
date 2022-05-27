@@ -30,5 +30,7 @@ If you are on kubernetes, this get even simpler via an operator watch the video 
 
 https://youtu.be/DKLFDqhjs5M
 
+See also: https://gitlab.com/datatruckerio
+
 ## Contributing guide
 See File CONTRIBUTE.md
