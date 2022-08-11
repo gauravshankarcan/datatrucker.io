@@ -450,12 +450,15 @@ spec:
           replicas: 1
           selector:
             matchLabels:
-              app.kubernetes.io: datatrucker-operator
+              app.kubernetes.io/name: datatrucker-operator
           strategy: {}
           template:
             metadata:
               labels:
-                app.kubernetes.io: datatrucker-operator
+                app.kubernetes.io/name: datatrucker-operator
+                app.kubernetes.io/instance: controller-manager
+                app.kubernetes.io/component: manager
+                app.kubernetes.io/managed-by: olm
             spec:
               containers:
               - args:

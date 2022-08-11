@@ -57,7 +57,7 @@ spec:
           revisionHistoryLimit: 1
           selector:
             matchLabels:
-              app.kubernetes.io: datatrucker-operator
+              app.kubernetes.io/name: datatrucker-operator
           strategy:
             rollingUpdate:
               maxSurge: 25%
@@ -66,7 +66,10 @@ spec:
           template:
             metadata:
               labels:
-                app.kubernetes.io: datatrucker-operator
+                app.kubernetes.io/name: datatrucker-operator
+                app.kubernetes.io/instance: operator
+                app.kubernetes.io/component: operator
+                app.kubernetes.io/managed-by: olm
             spec:
               containers:
               - args:
