@@ -7,16 +7,14 @@ app_version: 1.9.7
 
 use fastify nodejs app
 
-```
-
+```bash
+export PROFILE=dev
 npm install fastify
 ```
 
 to test the app, run the test command to perform tests
 
 > npm run start-dev && npm run test
-
-<br/>
 
 <br/>
 
