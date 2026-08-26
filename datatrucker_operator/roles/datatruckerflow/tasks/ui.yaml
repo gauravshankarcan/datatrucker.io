@@ -17,7 +17,7 @@
 
 
 - name: create a ui-config
-  community.kubernetes.k8s:
+  kubernetes.core.k8s:
     state: present
     definition: 
       apiVersion: v1
@@ -38,7 +38,7 @@
 
 
 - name: create a ui deployment
-  community.kubernetes.k8s:
+  kubernetes.core.k8s:
     state: present
     definition:
         kind: Deployment
@@ -114,6 +114,6 @@
 
 
 - name: create a service
-  community.kubernetes.k8s:
+  kubernetes.core.k8s:
     state: present
     definition: "{{ JOBSERVICEENTRY | from_yaml }}"

@@ -1,0 +1,76 @@
+# Multi-Warehouse Inventory Sync — distributed locking across warehouses
+---
+Resources:
+  requests:
+    memory: "512Mi"
+    cpu: "500m"
+  limits:
+    memory: "1Gi"
+    cpu: "1000m"
+
+JobDefinitions:
+  - name: healthcheck
+    type: Util-Echo
+    tenant: Admin
+    restmethod: GET
+    path: /api/v1/statuschecks/healthcheck
+
+  - name: multi-warehouse-sync
+    type: Script-JS
+    tenant: Commerce
+    credentialname: warehouse-db
+    restmethod: POST
+    path: /api/v1/warehouses/sync
+    script: |
+      const { sku, source_warehouse, target_warehouse, quantity } = context.body;
+      const globalLock = `wh:global:${sku}`;
+      const acquired = await redis.set(globalLock, '1', 'NX', 'EX', 120);
+      if (!acquired) throw { statusCode: 423, message: 'Global warehouse lock active' };
+      try {
+        await db.query('BEGIN');
+        const src = await db.query(
+          `UPDATE warehouse_stock SET quantity = quantity - $1 WHERE warehouse_id = $2 AND sku = $3 AND quantity >= $1 RETURNING quantity`,
+          [quantity, source_warehouse, sku]
+        );
+        if (!src.rows.length) throw { statusCode: 422, message: 'Insufficient stock' };
+        await db.query(
+          `INSERT INTO warehouse_stock (warehouse_id, sku, quantity) VALUES ($1,$2,$3)
+           ON CONFLICT (warehouse_id, sku) DO UPDATE SET quantity = warehouse_stock.quantity + $3`,
+          [target_warehouse, sku, quantity]
+        );
+        await db.query('COMMIT');
+        await kafka.produce('warehouse.transfers', { sku, source_warehouse, target_warehouse, quantity });
+        return { transferred: quantity, sku, source_remaining: src.rows[0].quantity };
+      } catch (e) {
+        await db.query('ROLLBACK');
+        throw e;
+      } finally {
+        await redis.del(globalLock);
+      }
+    validations:
+      type: object
+      required: [sku, source_warehouse, target_warehouse, quantity]
+      properties:
+        sku:
+          type: string
+        source_warehouse:
+          type: string
+          format: uuid
+        target_warehouse:
+          type: string
+          format: uuid
+        quantity:
+          type: integer
+          minimum: 1
+
+Keys:
+  configmap: warehouse-sync-keys
+Type: Job
+DatatruckerConfig: warehouse-sync-config
+Replicas: 2
+
+API:
+  Image:
+    repository: quay.io/datatrucker
+    imageName: datatrucker-api
+    tagName: latest

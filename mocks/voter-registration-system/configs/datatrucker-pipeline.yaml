@@ -1,0 +1,118 @@
+# Voter Registration System — eligibility validation and audit trail
+---
+Resources:
+  requests:
+    memory: "512Mi"
+    cpu: "500m"
+  limits:
+    memory: "1Gi"
+    cpu: "1000m"
+
+JobDefinitions:
+  - name: healthcheck
+    type: Util-Echo
+    tenant: Admin
+    restmethod: GET
+    path: /api/v1/statuschecks/healthcheck
+
+  - name: check-eligibility
+    type: Script-JS
+    tenant: Elections
+    credentialname: voter-db
+    restmethod: POST
+    path: /api/v1/voters/eligibility
+    script: |
+      const { birth_date, citizenship, residency_days, felony_record } = context.body;
+      const age = Math.floor((Date.now() - new Date(birth_date)) / (365.25 * 24 * 3600 * 1000));
+      const eligible = age >= 18 && citizenship === true && residency_days >= 30 && !felony_record;
+      await db.query(
+        `INSERT INTO eligibility_checks (user_ref, eligible, age, residency_days, checked_at)
+         VALUES ($1,$2,$3,$4,NOW())`,
+        [context.user.sub, eligible, age, residency_days]
+      );
+      return { eligible, age, reasons: eligible ? [] : ['age', 'citizenship', 'residency', 'felony'].filter(Boolean) };
+    validations:
+      type: object
+      required: [birth_date, citizenship, residency_days]
+      properties:
+        birth_date:
+          type: string
+          format: date
+        citizenship:
+          type: boolean
+        residency_days:
+          type: integer
+          minimum: 0
+        felony_record:
+          type: boolean
+
+  - name: register-voter
+    type: Script-JS
+    tenant: Elections
+    credentialname: voter-db
+    restmethod: POST
+    path: /api/v1/voters/register
+    script: |
+      const { first_name, last_name, address, birth_date, district_id } = context.body;
+      const voterId = 'VTR-' + Date.now().toString(36).toUpperCase();
+      const result = await db.query(
+        `INSERT INTO voters (voter_id, first_name, last_name, address, birth_date, district_id, status, registered_by)
+         VALUES ($1,$2,$3,$4,$5,$6,'pending',$7) RETURNING id, voter_id, status`,
+        [voterId, first_name, last_name, JSON.stringify(address), birth_date, district_id, context.user.sub]
+      );
+      await db.query(
+        `INSERT INTO voter_audit_log (voter_id, action, actor, details) VALUES ($1,'REGISTER',$2,$3)`,
+        [result.rows[0].id, context.user.sub, JSON.stringify({ district_id })]
+      );
+      return result.rows[0];
+    validations:
+      type: object
+      required: [first_name, last_name, address, birth_date, district_id]
+      properties:
+        first_name:
+          type: string
+          minLength: 1
+        last_name:
+          type: string
+          minLength: 1
+        birth_date:
+          type: string
+          format: date
+        district_id:
+          type: string
+          format: uuid
+        address:
+          type: object
+          required: [street, city, state, zip]
+
+  - name: audit-trail
+    type: DB-Postgres
+    tenant: Elections
+    credentialname: voter-db
+    restmethod: GET
+    path: /api/v1/voters/{voter_id}/audit
+    script: |
+      SELECT action, actor, details, created_at FROM voter_audit_log
+      WHERE voter_id = $1 ORDER BY created_at DESC LIMIT 100;
+    validations:
+      type: object
+      required: [voter_id]
+      properties:
+        voter_id:
+          type: string
+          format: uuid
+
+Keys:
+  configmap: voter-registration-keys
+Scripts:
+  configmap: voter-registration-scripts
+Type: Job
+DatatruckerConfig: voter-registration-config
+Replicas: 2
+
+API:
+  name: voter-api
+  Image:
+    repository: quay.io/datatrucker
+    imageName: datatrucker-api
+    tagName: latest

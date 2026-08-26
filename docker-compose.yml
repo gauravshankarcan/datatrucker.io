@@ -1,0 +1,112 @@
+# DataTrucker.IO - Local Development Stack
+# Full IaC orchestration: API, UI, PostgreSQL, Redis, Keycloak
+version: "3.9"
+
+services:
+  postgres:
+    image: docker.io/library/postgres:16-alpine
+    container_name: datatrucker-postgres
+    environment:
+      POSTGRES_USER: datatrucker
+      POSTGRES_PASSWORD: datatrucker
+      POSTGRES_DB: datatrucker
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U datatrucker"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    networks:
+      - datatrucker-net
+
+  redis:
+    image: docker.io/library/redis:7-alpine
+    container_name: datatrucker-redis
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+    networks:
+      - datatrucker-net
+
+  keycloak:
+    image: quay.io/keycloak/keycloak:24.0
+    container_name: datatrucker-keycloak
+    command: start-dev --import-realm
+    environment:
+      KC_DB: postgres
+      KC_DB_URL: jdbc:postgresql://postgres:5432/datatrucker
+      KC_DB_USERNAME: datatrucker
+      KC_DB_PASSWORD: datatrucker
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: admin
+    ports:
+      - "8081:8080"
+    volumes:
+      - ./deploy/keycloak/realm-export.json:/opt/keycloak/data/import/realm-export.json:ro
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - datatrucker-net
+
+  api:
+    build:
+      context: ./datatrucker_api
+      dockerfile: Dockerfile_API
+    container_name: datatrucker-api
+    environment:
+      NODE_ENV: production
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_USER: datatrucker
+      DB_PASSWORD: datatrucker
+      DB_NAME: datatrucker
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      KEYCLOAK_URL: http://keycloak:8080
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./datatrucker_api/app/config:/usr/src/app/config:ro
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://localhost:8080/api/v1/statuschecks/healthcheck || exit 1"]
+      interval: 15s
+      timeout: 10s
+      retries: 10
+      start_period: 60s
+    networks:
+      - datatrucker-net
+
+  ui:
+    build:
+      context: ./datatrucker_ui
+      dockerfile: Dockerfile_UI
+    container_name: datatrucker-ui
+    environment:
+      API_URL: http://api:8080
+    ports:
+      - "9080:9080"
+    depends_on:
+      api:
+        condition: service_healthy
+    networks:
+      - datatrucker-net
+
+volumes:
+  pgdata:
+
+networks:
+  datatrucker-net:
+    driver: bridge

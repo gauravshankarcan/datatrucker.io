@@ -27,4 +27,21 @@
   role: datatruckerflow
   reconcilePeriod: 1m
   snakeCaseParameters: false
-# +kubebuilder:scaffold:watch
+
+- version: v1
+  group: datatrucker.datatrucker.io
+  kind: DatatruckerInit
+  role: datatruckerinit
+  snakeCaseParameters: false
+
+- version: v1
+  group: datatrucker.datatrucker.io
+  kind: DatatruckerTenant
+  role: datatruckertenant
+  snakeCaseParameters: false
+
+- version: v1
+  group: datatrucker.datatrucker.io
+  kind: DatatruckerMock
+  role: datatruckermock
+  snakeCaseParameters: false

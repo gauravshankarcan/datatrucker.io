@@ -1,0 +1,8 @@
+services:
+  postgres:
+    environment:
+      POSTGRES_DB: saas_provisioning
+  api:
+    environment:
+      DB_NAME: saas_provisioning
+      MOCK_USECASE: saas-tenant-provisioning

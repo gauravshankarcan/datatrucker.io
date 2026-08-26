@@ -19,4 +19,6 @@
 resources:
 - bases/datatrucker.datatrucker.io_datatruckerconfigs.yaml
 - bases/datatrucker.datatrucker.io_datatruckerflows.yaml
-# +kubebuilder:scaffold:crdkustomizeresource
+- bases/datatrucker.datatrucker.io_datatruckerinits.yaml
+- bases/datatrucker.datatrucker.io_datatruckertenant.yaml
+- bases/datatrucker.datatrucker.io_datatruckermocks.yaml

@@ -1,0 +1,8 @@
+services:
+  postgres:
+    environment:
+      POSTGRES_DB: voter_registration
+  api:
+    environment:
+      DB_NAME: voter_registration
+      MOCK_USECASE: voter-registration-system

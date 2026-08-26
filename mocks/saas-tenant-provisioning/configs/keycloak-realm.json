@@ -1,0 +1,16 @@
+{
+  "realm": "SaaSProvisioning",
+  "enabled": true,
+  "roles": { "realm": [
+    { "name": "platform-admin" },
+    { "name": "tenant-admin" },
+    { "name": "tenant-user" }
+  ]},
+  "clients": [{
+    "clientId": "saas-api",
+    "enabled": true,
+    "secret": "saas-api-secret",
+    "directAccessGrantsEnabled": true,
+    "serviceAccountsEnabled": true
+  }]
+}

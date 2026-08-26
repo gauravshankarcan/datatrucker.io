@@ -1,0 +1,8 @@
+services:
+  postgres:
+    environment:
+      POSTGRES_DB: warehouse_inventory
+  api:
+    environment:
+      DB_NAME: warehouse_inventory
+      MOCK_USECASE: ecommerce-inventory-sync

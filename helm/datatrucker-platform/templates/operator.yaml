@@ -1,0 +1,115 @@
+{{- if .Values.operator.enabled }}
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: {{ .Values.operator.namespace }}
+  labels:
+    app.kubernetes.io/name: datatrucker-operator
+    app.kubernetes.io/managed-by: helm
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: datatrucker-operator-manager
+  labels:
+    app.kubernetes.io/name: datatrucker-operator
+rules:
+  - apiGroups: [""]
+    resources: [secrets, pods, pods/exec, pods/log, services, configmaps, namespaces]
+    verbs: [create, delete, get, list, patch, update, watch]
+  - apiGroups: [coordination.k8s.io]
+    resources: [leases]
+    verbs: [create, delete, get, list, patch, update, watch]
+  - apiGroups: [""]
+    resources: [events]
+    verbs: [create, patch]
+  - apiGroups: [apps]
+    resources: [deployments, daemonsets, replicasets, statefulsets]
+    verbs: [create, delete, get, list, patch, update, watch]
+  - apiGroups: [batch]
+    resources: [jobs]
+    verbs: [create, delete, get, list, patch, update, watch]
+  - apiGroups: [datatrucker.datatrucker.io]
+    resources:
+      - datatruckerconfigs
+      - datatruckerconfigs/status
+      - datatruckerconfigs/finalizers
+      - datatruckerflows
+      - datatruckerflows/status
+      - datatruckerflows/finalizers
+      - datatruckerinits
+      - datatruckerinits/status
+      - datatruckerinits/finalizers
+      - datatruckertenants
+      - datatruckertenants/status
+      - datatruckertenants/finalizers
+      - datatruckermocks
+      - datatruckermocks/status
+      - datatruckermocks/finalizers
+    verbs: [create, delete, get, list, patch, update, watch]
+  - apiGroups: [route.openshift.io]
+    resources: [routes]
+    verbs: [create, delete, get, list, patch, update, watch]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: datatrucker-operator-manager
+  labels:
+    app.kubernetes.io/name: datatrucker-operator
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: datatrucker-operator-manager
+subjects:
+  - kind: ServiceAccount
+    name: datatrucker-operator
+    namespace: {{ .Values.operator.namespace }}
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: datatrucker-operator
+  namespace: {{ .Values.operator.namespace }}
+  labels:
+    app.kubernetes.io/name: datatrucker-operator
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: datatrucker-operator
+  namespace: {{ .Values.operator.namespace }}
+  labels:
+    app.kubernetes.io/name: datatrucker-operator
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: datatrucker-operator
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: datatrucker-operator
+    spec:
+      serviceAccountName: datatrucker-operator
+      containers:
+        - name: manager
+          image: {{ .Values.imageRegistry }}/{{ .Values.images.operator }}:{{ .Values.imageTag }}
+          imagePullPolicy: Always
+          args:
+            - "--leader-elect"
+            - "--leader-election-id=datatrucker-operator"
+            - "--max-concurrent-reconciles=2"
+          env:
+            - name: ANSIBLE_GATHERING
+              value: explicit
+            - name: K8S_AUTH_PROXY
+              value: http://127.0.0.1:8888
+          resources:
+            requests:
+              cpu: 200m
+              memory: 512Mi
+            limits:
+              cpu: 1000m
+              memory: 1536Mi
+{{- end }}

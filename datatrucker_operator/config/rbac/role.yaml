@@ -87,4 +87,73 @@ rules:
       - patch
       - update
       - watch
+  - apiGroups:
+      - datatrucker.datatrucker.io
+    resources:
+      - datatruckerinits
+      - datatruckerinits/status
+      - datatruckerinits/finalizers
+      - datatruckertenants
+      - datatruckertenants/status
+      - datatruckertenants/finalizers
+      - datatruckermocks
+      - datatruckermocks/status
+      - datatruckermocks/finalizers
+    verbs:
+      - create
+      - delete
+      - get
+      - list
+      - patch
+      - update
+      - watch
+  - apiGroups:
+      - coordination.k8s.io
+    resources:
+      - leases
+    verbs:
+      - create
+      - delete
+      - get
+      - list
+      - patch
+      - update
+      - watch
+  - apiGroups:
+      - ""
+    resources:
+      - configmaps
+      - namespaces
+    verbs:
+      - create
+      - delete
+      - get
+      - list
+      - patch
+      - update
+      - watch
+  - apiGroups:
+      - batch
+    resources:
+      - jobs
+    verbs:
+      - create
+      - delete
+      - get
+      - list
+      - patch
+      - update
+      - watch
+  - apiGroups:
+      - route.openshift.io
+    resources:
+      - routes
+    verbs:
+      - create
+      - delete
+      - get
+      - list
+      - patch
+      - update
+      - watch
 # +kubebuilder:scaffold:rules

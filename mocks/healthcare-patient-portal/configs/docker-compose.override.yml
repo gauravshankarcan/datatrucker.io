@@ -1,0 +1,9 @@
+services:
+  postgres:
+    environment:
+      POSTGRES_DB: healthcare_portal
+  api:
+    environment:
+      DB_NAME: healthcare_portal
+      HIPAA_SALT: change-in-production
+      MOCK_USECASE: healthcare-patient-portal

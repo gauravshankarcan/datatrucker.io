@@ -1,0 +1,6 @@
+# Credentials and secrets — never commit
+.env
+.env.*
+*.token
+*credentials*
+deploy/secrets/

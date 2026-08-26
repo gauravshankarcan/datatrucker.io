@@ -15,11 +15,11 @@
 #
 
 - set_fact:
-    CRYPTO: "{{ API.crypto  | to_json }}" 
-    RESOURCE: "{{ API.resource | to_json }}" 
-    LOGINSERVER: "{{ API.loginServer  | to_json  }}" 
-    MGMTSSERVER: "{{ API.managementServer   | to_json }}"
-    JOBSSERVER: "{{ API.jobsServer   | to_json }}"
+    CRYPTO: "{{ merged_api.crypto | to_json }}" 
+    RESOURCE: "{{ merged_api.resource | to_json }}" 
+    LOGINSERVER: "{{ merged_api.loginServer | to_json }}" 
+    MGMTSSERVER: "{{ merged_api.managementServer | to_json }}"
+    JOBSSERVER: "{{ merged_api.jobsServer | to_json }}"
     DBSSERVER: |
       {
                     "type": "{{ DB.type }}",
@@ -33,7 +33,7 @@
       }
 
 - name: create a login-config
-  community.kubernetes.k8s:
+  kubernetes.core.k8s:
     state: present
     definition:
       kind: Secret
@@ -43,18 +43,18 @@
         name: '{{ ansible_operator_meta.name }}-login-config'
         namespace: '{{ ansible_operator_meta.namespace }}'
       data:
-        publicJWT.key: "{{ API.cryptokeys.publicJWTkey }}"
-        privateJWT.key: "{{ API.cryptokeys.privateJWTkey }}"
-        truckerapi.crt: "{{ API.cryptokeys.truckerapicrt }}"
-        truckerapi.key: "{{ API.cryptokeys.truckerapikey }}"
-        keycloak.key: "{{ API.cryptokeys.keycloakkey }}"
+        publicJWT.key: "{{ merged_api.cryptokeys.publicJWTkey }}"
+        privateJWT.key: "{{ merged_api.cryptokeys.privateJWTkey }}"
+        truckerapi.crt: "{{ merged_api.cryptokeys.truckerapicrt }}"
+        truckerapi.key: "{{ merged_api.cryptokeys.truckerapikey }}"
+        keycloak.key: "{{ merged_api.cryptokeys.keycloakkey }}"
         crypto.config.json: "{{ CRYPTO  | b64encode}}"
         db.config.json: "{{ DBSSERVER    | to_json | b64encode }}"
         resource.config.json: "{{ RESOURCE  | b64encode}}"
         server.config.json: "{{ LOGINSERVER  | b64encode}}"
 
 - name: create a management-config
-  community.kubernetes.k8s:
+  kubernetes.core.k8s:
     state: present
     definition:
       kind: Secret
@@ -64,18 +64,18 @@
         name: '{{ ansible_operator_meta.name }}-management-config'
         namespace: '{{ ansible_operator_meta.namespace }}'
       data:
-        publicJWT.key: "{{ API.cryptokeys.publicJWTkey }}"
-        privateJWT.key: "{{ API.cryptokeys.privateJWTkey }}"
-        truckerapi.crt: "{{ API.cryptokeys.truckerapicrt }}"
-        truckerapi.key: "{{ API.cryptokeys.truckerapikey }}"
-        keycloak.key: "{{ API.cryptokeys.keycloakkey }}"
+        publicJWT.key: "{{ merged_api.cryptokeys.publicJWTkey }}"
+        privateJWT.key: "{{ merged_api.cryptokeys.privateJWTkey }}"
+        truckerapi.crt: "{{ merged_api.cryptokeys.truckerapicrt }}"
+        truckerapi.key: "{{ merged_api.cryptokeys.truckerapikey }}"
+        keycloak.key: "{{ merged_api.cryptokeys.keycloakkey }}"
         crypto.config.json: "{{ CRYPTO  | b64encode}}"
         db.config.json: "{{ DBSSERVER    | to_json  | b64encode}}"
         resource.config.json: "{{ RESOURCE  | b64encode}}"
         server.config.json: "{{ MGMTSSERVER   | b64encode}}"
 
 - name: create a jobs-config
-  community.kubernetes.k8s:
+  kubernetes.core.k8s:
     state: present
     definition:
       kind: Secret
@@ -85,11 +85,11 @@
         name: '{{ ansible_operator_meta.name }}-jobs-config'
         namespace: '{{ ansible_operator_meta.namespace }}'
       data:
-        publicJWT.key: "{{ API.cryptokeys.publicJWTkey }}"
-        privateJWT.key: "{{ API.cryptokeys.privateJWTkey }}"
-        truckerapi.crt: "{{ API.cryptokeys.truckerapicrt }}"
-        truckerapi.key: "{{ API.cryptokeys.truckerapikey }}"
-        keycloak.key: "{{ API.cryptokeys.keycloakkey }}"
+        publicJWT.key: "{{ merged_api.cryptokeys.publicJWTkey }}"
+        privateJWT.key: "{{ merged_api.cryptokeys.privateJWTkey }}"
+        truckerapi.crt: "{{ merged_api.cryptokeys.truckerapicrt }}"
+        truckerapi.key: "{{ merged_api.cryptokeys.truckerapikey }}"
+        keycloak.key: "{{ merged_api.cryptokeys.keycloakkey }}"
         crypto.config.json: "{{ CRYPTO  | b64encode}}"
         db.config.json: "{{ DBSSERVER    | to_json  | b64encode }}"
         resource.config.json: "{{ RESOURCE  | b64encode}}"
@@ -99,7 +99,7 @@
 
 
 - name: create a dummyconfigmap
-  community.kubernetes.k8s:
+  kubernetes.core.k8s:
     state: present
     definition: 
       apiVersion: v1

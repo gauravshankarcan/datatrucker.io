@@ -1,0 +1,173 @@
+# FinTech KYC Onboarding Pipeline
+# Multi-step transactional identity verification workflow
+apiVersion: datatrucker.datatrucker.io/v1
+kind: DatatruckerFlow
+metadata:
+  name: fintech-kyc-onboarding
+  labels:
+    usecase: fintech-kyc-onboarding
+    domain: fintech
+spec:
+  Resources:
+    requests:
+      memory: "512Mi"
+      cpu: "500m"
+    limits:
+      memory: "1Gi"
+      cpu: "1000m"
+  Replicas: 2
+  Type: Job
+  DatatruckerConfig: fintech-kyc-config
+  JobDefinitions:
+    - name: kyc-initiate
+      type: DB
+      tenant: FinTech-Compliance
+      restmethod: POST
+      validations:
+        type: object
+        required:
+          - applicantId
+          - email
+          - countryCode
+        properties:
+          applicantId:
+            type: string
+            format: uuid
+          email:
+            type: string
+            format: email
+          countryCode:
+            type: string
+            pattern: "^[A-Z]{2}$"
+          productType:
+            type: string
+            enum:
+              - retail
+              - business
+              - premium
+
+    - name: identity-verify
+      type: Script-JS
+      tenant: FinTech-Compliance
+      restmethod: POST
+      validations:
+        type: object
+        required:
+          - applicantId
+          - documentType
+          - documentNumber
+        properties:
+          applicantId:
+            type: string
+            format: uuid
+          documentType:
+            type: string
+            enum:
+              - passport
+              - drivers_license
+              - national_id
+          documentNumber:
+            type: string
+            minLength: 5
+            maxLength: 32
+          dateOfBirth:
+            type: string
+            format: date
+
+    - name: document-upload
+      type: File-SFTP
+      tenant: FinTech-Compliance
+      restmethod: POST
+      validations:
+        type: object
+        required:
+          - applicantId
+          - documentCategory
+          - fileName
+        properties:
+          applicantId:
+            type: string
+            format: uuid
+          documentCategory:
+            type: string
+            enum:
+              - id_front
+              - id_back
+              - proof_of_address
+              - selfie
+          fileName:
+            type: string
+          checksum:
+            type: string
+            pattern: "^[a-f0-9]{64}$"
+
+    - name: sanctions-screen
+      type: IOT-Proxy
+      tenant: FinTech-Compliance
+      restmethod: POST
+      validations:
+        type: object
+        required:
+          - applicantId
+          - fullName
+        properties:
+          applicantId:
+            type: string
+            format: uuid
+          fullName:
+            type: string
+            minLength: 2
+          dateOfBirth:
+            type: string
+            format: date
+          nationality:
+            type: string
+            pattern: "^[A-Z]{2}$"
+
+    - name: kyc-decision
+      type: Script-JS
+      tenant: FinTech-Compliance
+      restmethod: POST
+      validations:
+        type: object
+        required:
+          - applicantId
+          - decision
+        properties:
+          applicantId:
+            type: string
+            format: uuid
+          decision:
+            type: string
+            enum:
+              - approved
+              - rejected
+              - manual_review
+          reasonCodes:
+            type: array
+            items:
+              type: string
+
+    - name: kyc-status
+      type: Util-Echo
+      tenant: FinTech-Compliance
+      restmethod: GET
+      validations:
+        type: object
+        required:
+          - applicantId
+        properties:
+          applicantId:
+            type: string
+            format: uuid
+
+  Keys:
+    configmap: fintech-kyc-keys
+  Scripts:
+    configmap: fintech-kyc-scripts
+  API:
+    name: fintech-kyc-api
+    Image:
+      repository: registry.gitlab.com/datatruckerio
+      imageName: datatrucker-server/datatrucker-api
+      tagName: latest

@@ -1,0 +1,11 @@
+{
+  "realm": "EcommerceInventory",
+  "enabled": true,
+  "roles": { "realm": [{ "name": "warehouse-admin" }, { "name": "warehouse-operator" }] },
+  "clients": [{
+    "clientId": "warehouse-api",
+    "enabled": true,
+    "secret": "warehouse-api-secret",
+    "directAccessGrantsEnabled": true
+  }]
+}

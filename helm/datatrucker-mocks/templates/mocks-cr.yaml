@@ -1,0 +1,46 @@
+{{- range .Values.mocks }}
+---
+apiVersion: datatrucker.datatrucker.io/v1
+kind: DatatruckerMock
+metadata:
+  name: {{ . }}
+  namespace: {{ $.Values.namespace }}
+  labels:
+    app.kubernetes.io/name: datatrucker-mock
+    datatrucker.io/mock: {{ . }}
+spec:
+  mockName: {{ . }}
+  configRef: {{ $.Values.configRef }}
+  flow:
+    Type: Job
+    Replicas: 1
+    DatatruckerConfig: {{ $.Values.configRef }}
+    Resources:
+      requests:
+        memory: 256Mi
+        cpu: 250m
+      limits:
+        memory: 512Mi
+        cpu: 500m
+    JobDefinitions:
+      - name: healthcheck
+        type: Util-Echo
+        tenant: Admin
+        restmethod: GET
+      - name: {{ . }}-endpoint
+        type: Util-Echo
+        tenant: {{ . }}
+        restmethod: POST
+        validations:
+          type: object
+          properties:
+            payload:
+              type: object
+    API:
+      name: {{ . }}-api
+      Image:
+        repository: {{ $.Values.imageRegistry }}
+        imageName: datatrucker-api
+        imageNameUI: datatrucker-ui
+        tagName: {{ $.Values.imageTag | quote }}
+{{- end }}

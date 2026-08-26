@@ -16,6 +16,28 @@
 ---
 # tasks file for DataTruckerConfig
 
+- name: Load role defaults for deep merge
+  include_vars:
+    file: vars/main.yml
+    name: cfg_defaults
+
+- name: Merge CR spec with role defaults
+  set_fact:
+    TempDB: "{{ cfg_defaults.TempDB | combine(TempDB | default({}), recursive=True) }}"
+    DB: "{{ cfg_defaults.DB | combine(DB | default({}), recursive=True) }}"
+    merged_api: "{{ cfg_defaults.API | combine(API | default({}), recursive=True) }}"
+
+- name: Ensure required API server blocks exist
+  set_fact:
+    merged_api: "{{ merged_api | combine({
+      'loginServer': merged_api.loginServer | default(cfg_defaults.API.loginServer),
+      'managementServer': merged_api.managementServer | default(cfg_defaults.API.managementServer),
+      'jobsServer': merged_api.jobsServer | default(cfg_defaults.API.jobsServer),
+      'cryptokeys': merged_api.cryptokeys | default(cfg_defaults.API.cryptokeys),
+      'crypto': merged_api.crypto | default(cfg_defaults.API.crypto),
+      'resource': merged_api.resource | default(cfg_defaults.API.resource)
+    }, recursive=True) }}"
+
 - name: Run Temp DB
   include_tasks: tempdb.yaml
   when: TempDB.enabled is true

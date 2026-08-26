@@ -16,9 +16,9 @@
 
 
 # Current Operator version
-VERSION ?= 2.0.0
+VERSION ?= 2.1.0
 # Default bundle image tag
-BUNDLE_IMG ?= docker.io/datatruckerio/datatrucker-operator-controller-bundle:$(VERSION)
+BUNDLE_IMG ?= quay.io/datatrucker/datatrucker-operator-bundle:$(VERSION)
 # Options for 'bundle-build'
 ifneq ($(origin CHANNELS), undefined)
 BUNDLE_CHANNELS := --channels=$(CHANNELS)
@@ -29,7 +29,7 @@ endif
 BUNDLE_METADATA_OPTS ?= $(BUNDLE_CHANNELS) $(BUNDLE_DEFAULT_CHANNEL)
 
 # Image URL to use all building/pushing image targets
-IMAGE_TAG_BASE ?= docker.io/datatruckerio/datatrucker-operator
+IMAGE_TAG_BASE ?= quay.io/datatrucker/datatrucker-operator
 #IMG ?= controller:latest
 IMG ?= $(IMAGE_TAG_BASE):$(VERSION)
 

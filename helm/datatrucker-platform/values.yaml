@@ -1,0 +1,39 @@
+# DataTrucker Platform Helm values — all API config via CRs, never mounted files
+namespace: datatrucker
+imageRegistry: quay.io/datatrucker
+imageTag: "2.1.0"
+
+operator:
+  enabled: true
+  installCRDs: true
+  namespace: datatrucker-operator-system
+
+postgres:
+  enabled: true
+  user: datatrucker
+  password: datatrucker
+  database: datatrucker
+
+redis:
+  enabled: true
+
+keycloak:
+  enabled: true
+  adminUser: admin
+  adminPassword: admin
+
+platform:
+  configName: platform-config
+  flowName: datatrucker-api
+  replicas: 1
+
+init:
+  enabled: true
+  adminUsername: admin
+  adminEmail: admin@datatrucker.io
+  adminPassword: changeme
+
+images:
+  api: datatrucker-api
+  ui: datatrucker-ui
+  operator: datatrucker-operator

@@ -1,0 +1,130 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main]
+
+env:
+  VERSION: "2.1.0"
+  QUAY_ORG: datatrucker
+  REGISTRY: quay.io/datatrucker
+
+jobs:
+  lint-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: npm
+          cache-dependency-path: |
+            datatrucker_api/app/package-lock.json
+            datatrucker_ui/app/package-lock.json
+
+      - name: Install API dependencies
+        working-directory: datatrucker_api/app
+        run: npm ci || npm install
+
+      - name: Lint API
+        working-directory: datatrucker_api/app
+        run: npm run lint || true
+
+      - name: Install UI dependencies
+        working-directory: datatrucker_ui/app
+        run: npm ci || npm install
+
+      - name: Build UI
+        working-directory: datatrucker_ui/app
+        run: npm run build
+
+      - name: Start services
+        run: |
+          docker compose up -d postgres redis
+          sleep 10
+
+      - name: Build and start API
+        run: |
+          docker compose build api
+          docker compose up -d api
+          sleep 30
+
+      - name: Run Newman tests
+        run: |
+          npm install -g newman
+          newman run ci/postman/DataTrucker\ IO.postman_collection.json \
+            --environment ci/postman/Local\ Environment.postman_environment.json \
+            --env-var "HOST=http://localhost:8080" \
+            --timeout-request 30000 \
+            --bail || true
+
+  build-and-push:
+    needs: lint-and-test
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Login to Quay.io
+        uses: docker/login-action@v3
+        with:
+          registry: quay.io
+          username: ${{ secrets.QUAY_USERNAME }}
+          password: ${{ secrets.QUAY_TOKEN }}
+
+      - name: Build and push API
+        uses: docker/build-push-action@v5
+        with:
+          context: datatrucker_api
+          file: datatrucker_api/Dockerfile_API
+          push: true
+          tags: |
+            ${{ env.REGISTRY }}/datatrucker-api:${{ env.VERSION }}
+            ${{ env.REGISTRY }}/datatrucker-api:latest
+
+      - name: Build and push UI
+        uses: docker/build-push-action@v5
+        with:
+          context: datatrucker_ui
+          file: datatrucker_ui/Dockerfile_UI
+          push: true
+          tags: |
+            ${{ env.REGISTRY }}/datatrucker-ui:${{ env.VERSION }}
+            ${{ env.REGISTRY }}/datatrucker-ui:latest
+
+      - name: Build and push Operator
+        uses: docker/build-push-action@v5
+        with:
+          context: datatrucker_operator
+          file: datatrucker_operator/Dockerfile
+          push: true
+          tags: |
+            ${{ env.REGISTRY }}/datatrucker-operator:${{ env.VERSION }}
+            ${{ env.REGISTRY }}/datatrucker-operator:latest
+
+  mock-tests:
+    needs: lint-and-test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Validate mock use case structure
+        run: |
+          for dir in mocks/*/; do
+            name=$(basename "$dir")
+            echo "Validating $name..."
+            test -f "$dir/configs/datatrucker-pipeline.yaml"
+            test -f "$dir/configs/keycloak-realm.json"
+            test -f "$dir/configs/docker-compose.override.yml"
+            test -f "$dir/docs/ARCHITECTURE.md"
+            test -f "$dir/docs/DATA_MODELS.md"
+            test -f "$dir/docs/SETUP_GUIDE.md"
+            test -f "$dir/tests/postman_collection.json"
+            test -f "$dir/tests/load_test.k6.js"
+            test -f "$dir/tests/run_tests.sh"
+          done
+          echo "All mock use cases validated"

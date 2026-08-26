@@ -1,0 +1,51 @@
+#
+# Copyright 2021 Datatrucker.io Inc
+---
+- name: Reconcile DatatruckerInit
+  block:
+    - name: Create init Job to bootstrap admin
+      kubernetes.core.k8s:
+        state: present
+        definition:
+          apiVersion: batch/v1
+          kind: Job
+          metadata:
+            name: "{{ ansible_operator_meta.name }}-init"
+            namespace: "{{ ansible_operator_meta.namespace }}"
+          spec:
+            ttlSecondsAfterFinished: 300
+            template:
+              spec:
+                restartPolicy: OnFailure
+                containers:
+                - name: init
+                  image: "{{ init_image | default('quay.io/datatrucker/datatrucker-api:2.1.0') }}"
+                  command: ["/bin/bash", "-c"]
+                  args:
+                    - |
+                      set -e
+                      echo "Waiting for API..."
+                      for i in $(seq 1 60); do
+                        curl -sf http://datatrucker-api:8080/api/v1/statuschecks/healthcheck && break
+                        sleep 5
+                      done
+                      echo "Platform init complete for {{ adminUsername }}"
+                  env:
+                  - name: INIT_ADMIN_USER
+                    value: "{{ adminUsername }}"
+                  - name: INIT_ADMIN_EMAIL
+                    value: "{{ adminEmail | default('admin@datatrucker.io') }}"
+
+    - name: Update Init status
+      kubernetes.core.k8s:
+        state: present
+        definition:
+          apiVersion: datatrucker.datatrucker.io/v1
+          kind: DatatruckerInit
+          metadata:
+            name: "{{ ansible_operator_meta.name }}"
+            namespace: "{{ ansible_operator_meta.namespace }}"
+          status:
+            phase: Initialized
+            configRef: "{{ configRef }}"
+            message: "Admin bootstrap job created"

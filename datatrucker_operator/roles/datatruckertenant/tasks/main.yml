@@ -1,0 +1,73 @@
+#
+# Copyright 2021 Datatrucker.io Inc
+---
+- name: Create tenant namespace
+  kubernetes.core.k8s:
+    state: present
+    definition:
+      apiVersion: v1
+      kind: Namespace
+      metadata:
+        name: "{{ tenantId }}"
+        labels:
+          datatrucker.io/tenant: "{{ tenantId }}"
+  when: createNamespace | default(false) | bool
+
+- name: Create tenant DatatruckerConfig
+  kubernetes.core.k8s:
+    state: present
+    definition:
+      apiVersion: datatrucker.datatrucker.io/v1
+      kind: DatatruckerConfig
+      metadata:
+        name: "{{ tenantId }}-config"
+        namespace: "{{ ansible_operator_meta.namespace }}"
+      spec:
+        DB:
+          user: datatrucker
+          password: datatrucker
+          databasename: "{{ tenantId | replace('-', '_') }}"
+          hostname: postgres
+          type: pg
+          port: 5432
+        API:
+          name: "{{ tenantId }}-api"
+
+- name: Create default tenant Flow
+  kubernetes.core.k8s:
+    state: present
+    definition:
+      apiVersion: datatrucker.datatrucker.io/v1
+      kind: DatatruckerFlow
+      metadata:
+        name: "{{ tenantId }}-flow"
+        namespace: "{{ ansible_operator_meta.namespace }}"
+      spec:
+        Type: Job
+        Replicas: 1
+        DatatruckerConfig: "{{ tenantId }}-config"
+        JobDefinitions:
+        - name: healthcheck
+          type: Util-Echo
+          tenant: "{{ tenantId }}"
+          restmethod: GET
+        API:
+          name: api
+          Image:
+            repository: quay.io/datatrucker
+            imageName: datatrucker-api
+            tagName: "2.1.0"
+
+- name: Update tenant status
+  kubernetes.core.k8s:
+    state: present
+    definition:
+      apiVersion: datatrucker.datatrucker.io/v1
+      kind: DatatruckerTenant
+      metadata:
+        name: "{{ ansible_operator_meta.name }}"
+        namespace: "{{ ansible_operator_meta.namespace }}"
+      status:
+        phase: Provisioned
+        tenantId: "{{ tenantId }}"
+        plan: "{{ plan | default('starter') }}"

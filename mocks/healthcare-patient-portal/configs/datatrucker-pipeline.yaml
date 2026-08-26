@@ -1,0 +1,89 @@
+# Healthcare Patient Portal — PII anonymization and HIPAA-compliant processing
+---
+Resources:
+  requests:
+    memory: "512Mi"
+    cpu: "500m"
+  limits:
+    memory: "1Gi"
+    cpu: "1000m"
+
+JobDefinitions:
+  - name: healthcheck
+    type: Util-Echo
+    tenant: Admin
+    restmethod: GET
+    path: /api/v1/statuschecks/healthcheck
+
+  - name: submit-patient-record
+    type: Script-JS
+    tenant: Healthcare
+    credentialname: hipaa-db
+    restmethod: POST
+    path: /api/v1/patients/records
+    script: |
+      const { patient_id, diagnosis, medications, notes } = context.body;
+      const anonId = 'ANON-' + crypto.createHash('sha256').update(patient_id + process.env.HIPAA_SALT).digest('hex').slice(0, 16);
+      const encrypted = await crypto.encrypt(JSON.stringify({ diagnosis, medications, notes }));
+      const result = await db.query(
+        `INSERT INTO patient_records (anonymous_id, encrypted_payload, created_by, retention_until)
+         VALUES ($1,$2,$3,NOW() + INTERVAL '7 years') RETURNING id, anonymous_id, created_at`,
+        [anonId, encrypted, context.user.sub]
+      );
+      await db.query(
+        `INSERT INTO hipaa_audit (record_id, action, actor, ip_hash) VALUES ($1,'CREATE',$2,$3)`,
+        [result.rows[0].id, context.user.sub, hashIP(context.ip)]
+      );
+      return { id: result.rows[0].id, anonymous_id: anonId, pii_stripped: true };
+    validations:
+      type: object
+      required: [patient_id, diagnosis]
+      properties:
+        patient_id:
+          type: string
+          format: uuid
+        diagnosis:
+          type: string
+          maxLength: 500
+        medications:
+          type: array
+          items:
+            type: string
+        notes:
+          type: string
+          maxLength: 2000
+
+  - name: anonymize-export
+    type: Script-JS
+    tenant: Healthcare
+    credentialname: hipaa-db
+    restmethod: POST
+    path: /api/v1/patients/export/anonymized
+    script: |
+      const rows = await db.query(
+        `SELECT anonymous_id, created_at FROM patient_records WHERE created_at >= $1 AND created_at <= $2`,
+        [context.body.start_date, context.body.end_date]
+      );
+      return { records: rows.rows, pii_removed: true, count: rows.rows.length };
+    validations:
+      type: object
+      required: [start_date, end_date]
+      properties:
+        start_date:
+          type: string
+          format: date-time
+        end_date:
+          type: string
+          format: date-time
+
+Keys:
+  configmap: healthcare-keys
+Type: Job
+DatatruckerConfig: healthcare-config
+Replicas: 2
+
+API:
+  Image:
+    repository: quay.io/datatrucker
+    imageName: datatrucker-api
+    tagName: latest

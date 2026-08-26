@@ -1,0 +1,13 @@
+apiVersion: v2
+name: datatrucker-platform
+description: DataTrucker enterprise platform — CR-driven deployment (no config mounts)
+type: application
+version: 2.1.0
+appVersion: "2.1.0"
+keywords:
+  - datatrucker
+  - lowcode
+  - operator
+maintainers:
+  - name: Gaurav Shankar
+    email: gauravshankar.can@gmail.com

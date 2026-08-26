@@ -1,0 +1,74 @@
+# CRM Pipeline — local service dependencies
+version: "3.9"
+
+services:
+  postgres:
+    environment:
+      POSTGRES_DB: crm_pipeline
+    volumes:
+      - ./mocks/crm-pipeline/configs/init-db.sql:/docker-entrypoint-initdb.d/02-crm-init.sql:ro
+
+  keycloak:
+    volumes:
+      - ./mocks/crm-pipeline/configs/keycloak-realm.json:/opt/keycloak/data/import/crm-realm.json:ro
+
+  api:
+    environment:
+      USECASE: crm-pipeline
+      DB_NAME: crm_pipeline
+      KEYCLOAK_REALM: CRMPipeline
+      KEYCLOAK_CLIENT_ID: crm-api
+      KEYCLOAK_CLIENT_SECRET: crm-api-secret-change-in-prod
+      KAFKA_BROKERS: kafka:9092
+      PIPELINE_CONFIG: /usr/src/app/config/mocks/crm-pipeline/datatrucker-pipeline.yaml
+    volumes:
+      - ./mocks/crm-pipeline/configs/datatrucker-pipeline.yaml:/usr/src/app/config/mocks/crm-pipeline/datatrucker-pipeline.yaml:ro
+    depends_on:
+      kafka:
+        condition: service_healthy
+
+  zookeeper:
+    image: confluentinc/cp-zookeeper:7.6.0
+    container_name: crm-zookeeper
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+    networks:
+      - datatrucker-net
+
+  kafka:
+    image: confluentinc/cp-kafka:7.6.0
+    container_name: crm-kafka
+    ports:
+      - "9092:9092"
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092,PLAINTEXT_HOST://localhost:9092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: "true"
+    depends_on:
+      - zookeeper
+    healthcheck:
+      test: ["CMD", "kafka-broker-api-versions", "--bootstrap-server", "localhost:9092"]
+      interval: 10s
+      timeout: 10s
+      retries: 10
+    networks:
+      - datatrucker-net
+
+  webhook-receiver:
+    image: mendhak/http-https-echo:31
+    container_name: crm-webhook-receiver
+    ports:
+      - "8099:8080"
+    environment:
+      HTTP_PORT: 8080
+    networks:
+      - datatrucker-net
+
+  redis:
+    ports:
+      - "6379:6379"

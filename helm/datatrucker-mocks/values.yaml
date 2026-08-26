@@ -1,0 +1,14 @@
+namespace: datatrucker
+configRef: platform-config
+imageRegistry: quay.io/datatrucker
+imageTag: "2.1.0"
+
+mocks:
+  - employee-management
+  - crm-pipeline
+  - voter-registration-system
+  - ecommerce-inventory-sync
+  - iot-telemetry-alerts
+  - fintech-kyc-onboarding
+  - healthcare-patient-portal
+  - saas-tenant-provisioning

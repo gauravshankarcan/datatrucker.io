@@ -1,0 +1,40 @@
+# FinTech KYC Onboarding - local stack extensions
+version: "3.9"
+
+services:
+  sftp:
+    image: docker.io/atmoz/sftp:alpine
+    container_name: fintech-kyc-sftp
+    ports:
+      - "2222:22"
+    volumes:
+      - kyc-documents:/home/kyc/upload
+    command: kyc:kycpass:1001:1001:upload
+    networks:
+      - datatrucker-net
+
+  sanctions-mock:
+    image: docker.io/mockserver/mockserver:5.15.0
+    container_name: fintech-sanctions-mock
+    ports:
+      - "1081:1080"
+    networks:
+      - datatrucker-net
+
+  keycloak:
+    volumes:
+      - ./keycloak-realm.json:/opt/keycloak/data/import/fintech-kyc-realm.json:ro
+
+  api:
+    environment:
+      SFTP_HOST: sftp
+      SFTP_PORT: 22
+      SFTP_USER: kyc
+      SFTP_PATH: /upload
+      SANCTIONS_API_URL: http://sanctions-mock:1080/screen
+      USECASE: fintech-kyc-onboarding
+    depends_on:
+      - sftp
+
+volumes:
+  kyc-documents:

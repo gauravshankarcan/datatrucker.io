@@ -1,0 +1,73 @@
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  name: datatrucker-api
+  namespace: {{ .Values.namespace }}
+  labels:
+    app.kubernetes.io/name: datatrucker
+spec:
+  to:
+    kind: Service
+    name: {{ .Values.platform.flowName }}
+  port:
+    targetPort: http
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: datatrucker-ui
+  namespace: {{ .Values.namespace }}
+  labels:
+    app: datatrucker-ui
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: datatrucker-ui
+  template:
+    metadata:
+      labels:
+        app: datatrucker-ui
+    spec:
+      containers:
+      - name: ui
+        image: {{ .Values.imageRegistry }}/{{ .Values.images.ui }}:{{ .Values.imageTag }}
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 9080
+        env:
+        - name: API_URL
+          value: http://{{ .Values.platform.flowName }}:80
+        resources:
+          requests:
+            memory: 128Mi
+            cpu: 100m
+          limits:
+            memory: 256Mi
+            cpu: 300m
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: datatrucker-ui
+  namespace: {{ .Values.namespace }}
+spec:
+  selector:
+    app: datatrucker-ui
+  ports:
+  - port: 9080
+    targetPort: 9080
+---
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  name: datatrucker-ui
+  namespace: {{ .Values.namespace }}
+  labels:
+    app.kubernetes.io/name: datatrucker
+spec:
+  to:
+    kind: Service
+    name: datatrucker-ui
+  port:
+    targetPort: 9080

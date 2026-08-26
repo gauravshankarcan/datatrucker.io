@@ -1,0 +1,50 @@
+# Employee Management — local service dependencies
+# Usage: docker compose -f docker-compose.yml -f mocks/employee-management/configs/docker-compose.override.yml up
+version: "3.9"
+
+services:
+  postgres:
+    environment:
+      POSTGRES_DB: hr_employees
+    volumes:
+      - ./mocks/employee-management/configs/init-db.sql:/docker-entrypoint-initdb.d/01-init.sql:ro
+
+  keycloak:
+    volumes:
+      - ./mocks/employee-management/configs/keycloak-realm.json:/opt/keycloak/data/import/employee-realm.json:ro
+    environment:
+      KC_HOSTNAME: localhost
+
+  api:
+    environment:
+      USECASE: employee-management
+      DB_NAME: hr_employees
+      KEYCLOAK_REALM: EmployeeManagement
+      KEYCLOAK_CLIENT_ID: employee-api
+      KEYCLOAK_CLIENT_SECRET: employee-api-secret-change-in-prod
+      PIPELINE_CONFIG: /usr/src/app/config/mocks/employee-management/datatrucker-pipeline.yaml
+    volumes:
+      - ./mocks/employee-management/configs/datatrucker-pipeline.yaml:/usr/src/app/config/mocks/employee-management/datatrucker-pipeline.yaml:ro
+
+  sftp-mock:
+    image: atmoz/sftp:alpine
+    container_name: employee-sftp-mock
+    ports:
+      - "2222:22"
+    volumes:
+      - employee-sftp-data:/home/compliance/audit-exports
+    command: compliance:Compliance123!:1001:1001:audit-exports
+    networks:
+      - datatrucker-net
+
+  mailhog:
+    image: mailhog/mailhog:v1.0.1
+    container_name: employee-mailhog
+    ports:
+      - "1025:1025"
+      - "8025:8025"
+    networks:
+      - datatrucker-net
+
+volumes:
+  employee-sftp-data:

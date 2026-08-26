@@ -36,13 +36,13 @@
 
 
 - name: create a service
-  community.kubernetes.k8s:
+  kubernetes.core.k8s:
     state: present
     definition: "{{ SERVICEENTRY | from_yaml }}"
  
 
 - name: create a TempDB
-  community.kubernetes.k8s:
+  kubernetes.core.k8s:
     state: present
     definition:
       kind: Deployment

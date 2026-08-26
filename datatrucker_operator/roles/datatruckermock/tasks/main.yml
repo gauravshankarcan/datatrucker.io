@@ -1,0 +1,29 @@
+#
+# Copyright 2021 Datatrucker.io Inc
+---
+- name: Deploy mock DatatruckerFlow from CR spec
+  kubernetes.core.k8s:
+    state: present
+    definition:
+      apiVersion: datatrucker.datatrucker.io/v1
+      kind: DatatruckerFlow
+      metadata:
+        name: "{{ mockName }}"
+        namespace: "{{ ansible_operator_meta.namespace }}"
+        labels:
+          datatrucker.io/mock: "{{ mockName }}"
+      spec: "{{ flow | combine({'DatatruckerConfig': configRef}, recursive=True) }}"
+
+- name: Update mock status
+  kubernetes.core.k8s:
+    state: present
+    definition:
+      apiVersion: datatrucker.datatrucker.io/v1
+      kind: DatatruckerMock
+      metadata:
+        name: "{{ ansible_operator_meta.name }}"
+        namespace: "{{ ansible_operator_meta.namespace }}"
+      status:
+        phase: Deployed
+        mockName: "{{ mockName }}"
+        flowName: "{{ mockName }}"

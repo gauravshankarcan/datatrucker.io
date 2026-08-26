@@ -1,0 +1,178 @@
+# IoT Telemetry Alerts Pipeline
+# Time-series ingestion, anomaly detection, and webhook routing
+apiVersion: datatrucker.datatrucker.io/v1
+kind: DatatruckerFlow
+metadata:
+  name: iot-telemetry-alerts
+  labels:
+    usecase: iot-telemetry-alerts
+    domain: iot
+spec:
+  Resources:
+    requests:
+      memory: "512Mi"
+      cpu: "500m"
+    limits:
+      memory: "1Gi"
+      cpu: "1000m"
+  Replicas: 2
+  Type: Job
+  DatatruckerConfig: iot-telemetry-config
+  JobDefinitions:
+    - name: telemetry-ingest
+      type: IOT-Kafka-Producer
+      tenant: IoT-Operations
+      restmethod: POST
+      validations:
+        type: object
+        required:
+          - deviceId
+          - timestamp
+          - metrics
+        properties:
+          deviceId:
+            type: string
+            pattern: "^[a-zA-Z0-9_-]{3,64}$"
+          timestamp:
+            type: string
+            format: date-time
+          metrics:
+            type: object
+            additionalProperties:
+              type: number
+          location:
+            type: object
+            properties:
+              lat:
+                type: number
+              lon:
+                type: number
+
+    - name: telemetry-buffer
+      type: IOT-Redis
+      tenant: IoT-Operations
+      restmethod: POST
+      validations:
+        type: object
+        required:
+          - deviceId
+          - windowKey
+        properties:
+          deviceId:
+            type: string
+          windowKey:
+            type: string
+            enum:
+              - "1m"
+              - "5m"
+              - "15m"
+              - "1h"
+          ttlSeconds:
+            type: integer
+            minimum: 60
+            maximum: 86400
+
+    - name: anomaly-detect
+      type: Script-JS
+      tenant: IoT-Operations
+      restmethod: POST
+      validations:
+        type: object
+        required:
+          - deviceId
+          - metric
+          - value
+        properties:
+          deviceId:
+            type: string
+          metric:
+            type: string
+          value:
+            type: number
+          baseline:
+            type: object
+            properties:
+              mean:
+                type: number
+              stddev:
+                type: number
+          thresholdSigma:
+            type: number
+            minimum: 1
+            maximum: 5
+            default: 3
+
+    - name: alert-dispatch
+      type: IOT-Proxy
+      tenant: IoT-Operations
+      restmethod: POST
+      validations:
+        type: object
+        required:
+          - alertId
+          - severity
+          - webhookUrl
+        properties:
+          alertId:
+            type: string
+            format: uuid
+          severity:
+            type: string
+            enum:
+              - info
+              - warning
+              - critical
+          webhookUrl:
+            type: string
+            format: uri
+          payload:
+            type: object
+
+    - name: alert-persist
+      type: DB
+      tenant: IoT-Operations
+      restmethod: POST
+      validations:
+        type: object
+        required:
+          - alertId
+          - deviceId
+          - status
+        properties:
+          alertId:
+            type: string
+          deviceId:
+            type: string
+          status:
+            type: string
+            enum:
+              - open
+              - acknowledged
+              - resolved
+          metadata:
+            type: object
+
+    - name: health-ping
+      type: Util-Echo
+      tenant: Admin
+      restmethod: GET
+      validations:
+        type: object
+        properties:
+          service:
+            type: string
+            enum:
+              - telemetry
+              - alerts
+              - webhooks
+
+  Keys:
+    configmap: iot-telemetry-keys
+  Scripts:
+    configmap: iot-telemetry-scripts
+  API:
+    name: iot-telemetry-api
+    Image:
+      repository: registry.gitlab.com/datatruckerio
+      imageName: datatrucker-server/datatrucker-api
+      tagName: latest

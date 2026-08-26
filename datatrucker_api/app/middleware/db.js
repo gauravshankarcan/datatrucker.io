@@ -28,11 +28,11 @@ if (db.type === 'oracledb') {
       };
 } else {
       connectionopt = {
-            host: db.host,
-            user: db.username,
-            password: db.password,
-            database: db.database,
-            port: db.port
+            host: process.env.DB_HOST || db.host,
+            user: process.env.DB_USER || db.username,
+            password: process.env.DB_PASSWORD || db.password,
+            database: process.env.DB_NAME || db.database,
+            port: parseInt(process.env.DB_PORT || db.port, 10)
       };
 }
 

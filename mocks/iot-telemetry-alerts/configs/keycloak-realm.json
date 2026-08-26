@@ -1,0 +1,72 @@
+{
+  "realm": "IoT-Telemetry",
+  "enabled": true,
+  "sslRequired": "external",
+  "registrationAllowed": false,
+  "loginWithEmailAllowed": true,
+  "duplicateEmailsAllowed": false,
+  "resetPasswordAllowed": true,
+  "bruteForceProtected": true,
+  "roles": {
+    "realm": [
+      { "name": "iot-admin", "description": "Full IoT platform administration" },
+      { "name": "iot-operator", "description": "Manage devices and acknowledge alerts" },
+      { "name": "iot-viewer", "description": "Read-only telemetry and alert access" },
+      { "name": "webhook-dispatcher", "description": "Service account for outbound webhook routing" }
+    ]
+  },
+  "clients": [
+    {
+      "clientId": "iot-telemetry-api",
+      "enabled": true,
+      "publicClient": false,
+      "secret": "iot-telemetry-secret-change-me",
+      "directAccessGrantsEnabled": true,
+      "serviceAccountsEnabled": true,
+      "redirectUris": ["*"],
+      "webOrigins": ["*"]
+    },
+    {
+      "clientId": "iot-device-gateway",
+      "enabled": true,
+      "publicClient": false,
+      "secret": "device-gateway-secret-change-me",
+      "directAccessGrantsEnabled": false,
+      "serviceAccountsEnabled": true,
+      "redirectUris": ["*"],
+      "webOrigins": ["*"]
+    }
+  ],
+  "users": [
+    {
+      "username": "iot-admin",
+      "enabled": true,
+      "emailVerified": true,
+      "firstName": "IoT",
+      "lastName": "Admin",
+      "email": "iot-admin@datatrucker.io",
+      "credentials": [{ "type": "password", "value": "iot-admin-pass", "temporary": false }],
+      "realmRoles": ["iot-admin"]
+    },
+    {
+      "username": "iot-operator",
+      "enabled": true,
+      "emailVerified": true,
+      "firstName": "IoT",
+      "lastName": "Operator",
+      "email": "iot-operator@datatrucker.io",
+      "credentials": [{ "type": "password", "value": "iot-operator-pass", "temporary": false }],
+      "realmRoles": ["iot-operator"]
+    },
+    {
+      "username": "iot-viewer",
+      "enabled": true,
+      "emailVerified": true,
+      "firstName": "IoT",
+      "lastName": "Viewer",
+      "email": "iot-viewer@datatrucker.io",
+      "credentials": [{ "type": "password", "value": "iot-viewer-pass", "temporary": false }],
+      "realmRoles": ["iot-viewer"]
+    }
+  ]
+}

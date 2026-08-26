@@ -1,0 +1,23 @@
+{
+  "realm": "VoterRegistration",
+  "enabled": true,
+  "roles": { "realm": [
+    { "name": "elections-admin" },
+    { "name": "registrar" },
+    { "name": "auditor" }
+  ]},
+  "clients": [{
+    "clientId": "voter-api",
+    "enabled": true,
+    "publicClient": false,
+    "secret": "voter-api-secret",
+    "directAccessGrantsEnabled": true,
+    "serviceAccountsEnabled": true
+  }],
+  "users": [{
+    "username": "registrar",
+    "enabled": true,
+    "credentials": [{ "type": "password", "value": "Registrar123!", "temporary": false }],
+    "realmRoles": ["registrar"]
+  }]
+}

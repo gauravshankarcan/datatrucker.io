@@ -1,0 +1,415 @@
+{
+  "info": {
+    "name": "Employee Management API",
+    "description": "Integration and boundary tests for the Employee Management DataTrucker mock",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_postman_id": "emp-mgmt-001"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:8080" },
+    { "key": "keycloakUrl", "value": "http://localhost:8081" },
+    { "key": "clientId", "value": "employee-api" },
+    { "key": "clientSecret", "value": "employee-api-secret-change-in-prod" },
+    { "key": "adminToken", "value": "" },
+    { "key": "viewerToken", "value": "" },
+    { "key": "createdEmployeeId", "value": "" },
+    { "key": "engineeringDeptId", "value": "550e8400-e29b-41d4-a716-446655440001" }
+  ],
+  "item": [
+    {
+      "name": "Setup",
+      "item": [
+        {
+          "name": "Get Admin Token",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Admin token obtained', function () {",
+                  "  pm.response.to.have.status(200);",
+                  "  const json = pm.response.json();",
+                  "  pm.expect(json.access_token).to.be.a('string');",
+                  "  pm.collectionVariables.set('adminToken', json.access_token);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/x-www-form-urlencoded" }],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                { "key": "client_id", "value": "{{clientId}}" },
+                { "key": "client_secret", "value": "{{clientSecret}}" },
+                { "key": "grant_type", "value": "password" },
+                { "key": "username", "value": "hr.admin" },
+                { "key": "password", "value": "HrAdmin123!" }
+              ]
+            },
+            "url": "{{keycloakUrl}}/realms/EmployeeManagement/protocol/openid-connect/token"
+          }
+        },
+        {
+          "name": "Get Viewer Token",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Viewer token obtained', function () {",
+                  "  pm.response.to.have.status(200);",
+                  "  pm.collectionVariables.set('viewerToken', pm.response.json().access_token);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/x-www-form-urlencoded" }],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                { "key": "client_id", "value": "{{clientId}}" },
+                { "key": "client_secret", "value": "{{clientSecret}}" },
+                { "key": "grant_type", "value": "password" },
+                { "key": "username", "value": "hr.viewer" },
+                { "key": "password", "value": "HrViewer123!" }
+              ]
+            },
+            "url": "{{keycloakUrl}}/realms/EmployeeManagement/protocol/openid-connect/token"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Positive Tests",
+      "item": [
+        {
+          "name": "Health Check",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Health check returns 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Status is ok', () => {",
+                  "  const body = pm.response.json();",
+                  "  pm.expect(body.status).to.eql('ok');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v1/statuschecks/healthcheck"
+          }
+        },
+        {
+          "name": "List Departments",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Returns 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Departments array present', () => {",
+                  "  pm.expect(pm.response.json()).to.have.property('departments');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{adminToken}}" }],
+            "url": "{{baseUrl}}/api/v1/departments"
+          }
+        },
+        {
+          "name": "Create Employee",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Employee created with 201', () => pm.response.to.have.status(201));",
+                  "pm.test('Employee number generated', () => {",
+                  "  const emp = pm.response.json();",
+                  "  pm.expect(emp.employee_number).to.match(/^EMP-/);",
+                  "  pm.collectionVariables.set('createdEmployeeId', emp.id);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{adminToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"first_name\": \"Test\",\n  \"last_name\": \"Employee\",\n  \"email\": \"test.employee@acmecorp.example\",\n  \"department_id\": \"{{engineeringDeptId}}\",\n  \"hire_date\": \"2025-01-15\",\n  \"job_title\": \"QA Engineer\"\n}"
+            },
+            "url": "{{baseUrl}}/api/v1/employees"
+          }
+        },
+        {
+          "name": "Get Employee by ID",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Returns 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Correct employee returned', () => {",
+                  "  pm.expect(pm.response.json().email).to.eql('test.employee@acmecorp.example');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{adminToken}}" }],
+            "url": "{{baseUrl}}/api/v1/employees/{{createdEmployeeId}}"
+          }
+        },
+        {
+          "name": "Assign Department",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Assignment succeeds', () => pm.response.to.have.status(200));",
+                  "pm.test('Assignment record returned', () => {",
+                  "  pm.expect(pm.response.json()).to.have.property('effective_date');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{adminToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"department_id\": \"550e8400-e29b-41d4-a716-446655440002\",\n  \"reason\": \"Postman test transfer\"\n}"
+            },
+            "url": "{{baseUrl}}/api/v1/employees/{{createdEmployeeId}}/department"
+          }
+        },
+        {
+          "name": "List Employees with Filter",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Filtered list returns 200', () => pm.response.to.have.status(200));"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{viewerToken}}" }],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/employees?status=active&limit=10",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "employees"],
+              "query": [
+                { "key": "status", "value": "active" },
+                { "key": "limit", "value": "10" }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Negative Tests",
+      "item": [
+        {
+          "name": "Create Employee - Invalid Email",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Returns 400 for invalid email', () => pm.response.to.have.status(400));",
+                  "pm.test('Validation error message', () => {",
+                  "  pm.expect(pm.response.json().error).to.eql('validation_failed');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{adminToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"first_name\": \"Bad\",\n  \"last_name\": \"Email\",\n  \"email\": \"not-an-email\",\n  \"department_id\": \"{{engineeringDeptId}}\",\n  \"hire_date\": \"2025-01-15\"\n}"
+            },
+            "url": "{{baseUrl}}/api/v1/employees"
+          }
+        },
+        {
+          "name": "Create Employee - Missing Required Fields",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Returns 400 for missing fields', () => pm.response.to.have.status(400));"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{adminToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"first_name\": \"Incomplete\"\n}"
+            },
+            "url": "{{baseUrl}}/api/v1/employees"
+          }
+        },
+        {
+          "name": "Get Employee - Invalid UUID",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Returns 400 for invalid UUID', () => pm.response.to.have.status(400));"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{adminToken}}" }],
+            "url": "{{baseUrl}}/api/v1/employees/not-a-valid-uuid"
+          }
+        },
+        {
+          "name": "Get Employee - Not Found",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Returns 404 for unknown employee', () => pm.response.to.have.status(404));"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{adminToken}}" }],
+            "url": "{{baseUrl}}/api/v1/employees/00000000-0000-0000-0000-000000000099"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Unauthorized Tests",
+      "item": [
+        {
+          "name": "List Employees - No Token",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Returns 401 without token', () => pm.response.to.have.status(401));"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v1/employees"
+          }
+        },
+        {
+          "name": "Create Employee - Viewer Role Forbidden",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Returns 403 for viewer creating employee', () => pm.response.to.have.status(403));"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{viewerToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"first_name\": \"Forbidden\",\n  \"last_name\": \"Create\",\n  \"email\": \"forbidden@acmecorp.example\",\n  \"department_id\": \"{{engineeringDeptId}}\",\n  \"hire_date\": \"2025-01-15\"\n}"
+            },
+            "url": "{{baseUrl}}/api/v1/employees"
+          }
+        },
+        {
+          "name": "Delete Employee - Invalid Token",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Returns 401 for invalid token', () => pm.response.to.have.status(401));"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [{ "key": "Authorization", "value": "Bearer invalid.jwt.token" }],
+            "url": "{{baseUrl}}/api/v1/employees/{{createdEmployeeId}}"
+          }
+        }
+      ]
+    }
+  ]
+}

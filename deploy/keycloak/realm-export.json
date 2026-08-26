@@ -1,0 +1,60 @@
+{
+  "realm": "DataTrucker",
+  "enabled": true,
+  "sslRequired": "external",
+  "registrationAllowed": true,
+  "loginWithEmailAllowed": true,
+  "duplicateEmailsAllowed": false,
+  "resetPasswordAllowed": true,
+  "editUsernameAllowed": false,
+  "bruteForceProtected": true,
+  "roles": {
+    "realm": [
+      { "name": "admin", "description": "Administrator role" },
+      { "name": "developer", "description": "Developer role" },
+      { "name": "viewer", "description": "Read-only viewer" }
+    ]
+  },
+  "clients": [
+    {
+      "clientId": "datatrucker-api",
+      "enabled": true,
+      "publicClient": false,
+      "secret": "datatrucker-secret",
+      "directAccessGrantsEnabled": true,
+      "serviceAccountsEnabled": true,
+      "redirectUris": ["*"],
+      "webOrigins": ["*"]
+    },
+    {
+      "clientId": "datatrucker-ui",
+      "enabled": true,
+      "publicClient": true,
+      "directAccessGrantsEnabled": true,
+      "redirectUris": ["*"],
+      "webOrigins": ["*"]
+    }
+  ],
+  "users": [
+    {
+      "username": "admin",
+      "enabled": true,
+      "emailVerified": true,
+      "firstName": "Admin",
+      "lastName": "User",
+      "email": "admin@datatrucker.io",
+      "credentials": [{ "type": "password", "value": "admin", "temporary": false }],
+      "realmRoles": ["admin"]
+    },
+    {
+      "username": "developer",
+      "enabled": true,
+      "emailVerified": true,
+      "firstName": "Developer",
+      "lastName": "User",
+      "email": "developer@datatrucker.io",
+      "credentials": [{ "type": "password", "value": "developer", "temporary": false }],
+      "realmRoles": ["developer"]
+    }
+  ]
+}

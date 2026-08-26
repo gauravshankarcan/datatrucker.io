@@ -1,0 +1,253 @@
+# CRM Pipeline — DataTrucker JobDefinitions
+# Lead scoring, pipeline stage management, and webhook notifications
+---
+Resources:
+  requests:
+    memory: "512Mi"
+    cpu: "500m"
+  limits:
+    memory: "1Gi"
+    cpu: "1000m"
+
+JobDefinitions:
+  - name: healthcheck
+    type: Util-Echo
+    tenant: Admin
+    restmethod: GET
+    path: /api/v1/statuschecks/healthcheck
+
+  - name: ingest-lead
+    type: Script-JS
+    tenant: CRM
+    credentialname: crm-db
+    restmethod: POST
+    path: /api/v1/crm/leads
+    script: |
+      const { company, contact_name, email, phone, source, metadata } = context.body;
+      const score = calculateLeadScore({ company, source, metadata });
+      const stage = score >= 70 ? 'qualified' : score >= 40 ? 'nurturing' : 'new';
+      const result = await db.query(
+        `INSERT INTO leads (company, contact_name, email, phone, source, score, stage, metadata)
+         VALUES ($1,$2,$3,$4,$5,$6,$7,$8) RETURNING *`,
+        [company, contact_name, email, phone, source, score, stage, JSON.stringify(metadata || {})]
+      );
+      await kafka.produce('crm.leads.created', { lead_id: result.rows[0].id, score, stage });
+      return { ...result.rows[0], score_breakdown: scoreBreakdown(metadata, source) };
+    validations:
+      type: object
+      required: [company, contact_name, email, source]
+      properties:
+        company:
+          type: string
+          minLength: 1
+          maxLength: 200
+        contact_name:
+          type: string
+          minLength: 1
+          maxLength: 150
+        email:
+          type: string
+          format: email
+        phone:
+          type: string
+          pattern: "^\\+?[0-9\\-\\s()]{7,20}$"
+        source:
+          type: string
+          enum: [website, referral, trade_show, cold_outreach, partner, inbound_call]
+        metadata:
+          type: object
+          properties:
+            company_size:
+              type: integer
+              minimum: 1
+            annual_revenue:
+              type: number
+            industry:
+              type: string
+            budget_confirmed:
+              type: boolean
+
+  - name: score-lead
+    type: Script-JS
+    tenant: CRM
+    credentialname: crm-db
+    restmethod: POST
+    path: /api/v1/crm/leads/{lead_id}/score
+    script: |
+      const lead = await db.query('SELECT * FROM leads WHERE id = $1', [context.params.lead_id]);
+      if (!lead.rows.length) throw new Error('Lead not found');
+      const newScore = recalculateScore(lead.rows[0], context.body.signals);
+      await db.query(
+        'UPDATE leads SET score = $1, scored_at = NOW() WHERE id = $2 RETURNING *',
+        [newScore, context.params.lead_id]
+      );
+      if (newScore >= 70) {
+        await kafka.produce('crm.leads.qualified', { lead_id: context.params.lead_id, score: newScore });
+      }
+      return { lead_id: context.params.lead_id, score: newScore };
+    validations:
+      type: object
+      required: [lead_id]
+      properties:
+        lead_id:
+          type: string
+          format: uuid
+        signals:
+          type: object
+          properties:
+            email_opened:
+              type: boolean
+            demo_requested:
+              type: boolean
+            pricing_page_visit:
+              type: boolean
+            decision_maker:
+              type: boolean
+
+  - name: list-pipeline
+    type: DB-Postgres
+    tenant: CRM
+    credentialname: crm-db
+    restmethod: GET
+    path: /api/v1/crm/pipeline
+    script: |
+      SELECT stage, COUNT(*) AS count,
+             ROUND(AVG(score)::numeric, 1) AS avg_score,
+             SUM(estimated_value) AS total_value
+      FROM leads
+      WHERE ($1::text IS NULL OR owner_id = $1)
+        AND archived = false
+      GROUP BY stage
+      ORDER BY CASE stage
+        WHEN 'new' THEN 1 WHEN 'nurturing' THEN 2 WHEN 'qualified' THEN 3
+        WHEN 'proposal' THEN 4 WHEN 'negotiation' THEN 5 WHEN 'closed_won' THEN 6
+        WHEN 'closed_lost' THEN 7 END;
+    validations:
+      type: object
+      properties:
+        owner_id:
+          type: string
+          format: uuid
+
+  - name: advance-stage
+    type: Script-JS
+    tenant: CRM
+    credentialname: crm-db
+    restmethod: POST
+    path: /api/v1/crm/leads/{lead_id}/stage
+    script: |
+      const STAGES = ['new','nurturing','qualified','proposal','negotiation','closed_won','closed_lost'];
+      const { lead_id } = context.params;
+      const { stage, reason } = context.body;
+      const lead = await db.query('SELECT stage, score FROM leads WHERE id = $1', [lead_id]);
+      if (!lead.rows.length) throw new Error('Lead not found');
+      const currentIdx = STAGES.indexOf(lead.rows[0].stage);
+      const targetIdx = STAGES.indexOf(stage);
+      if (targetIdx < currentIdx && stage !== 'closed_lost') {
+        throw new Error('Cannot move lead backwards without closing as lost');
+      }
+      if (['proposal','negotiation','closed_won'].includes(stage) && lead.rows[0].score < 40) {
+        throw new Error('Lead score too low for this stage');
+      }
+      const updated = await db.query(
+        `UPDATE leads SET stage = $1, stage_changed_at = NOW(), stage_change_reason = $2
+         WHERE id = $3 RETURNING *`,
+        [stage, reason, lead_id]
+      );
+      await db.query(
+        'INSERT INTO pipeline_history (lead_id, from_stage, to_stage, reason, changed_by) VALUES ($1,$2,$3,$4,$5)',
+        [lead_id, lead.rows[0].stage, stage, reason, context.user.sub]
+      );
+      await kafka.produce('crm.pipeline.stage_changed', {
+        lead_id, from: lead.rows[0].stage, to: stage
+      });
+      await triggerWebhooks('stage_changed', updated.rows[0]);
+      return updated.rows[0];
+    validations:
+      type: object
+      required: [lead_id, stage]
+      properties:
+        lead_id:
+          type: string
+          format: uuid
+        stage:
+          type: string
+          enum: [new, nurturing, qualified, proposal, negotiation, closed_won, closed_lost]
+        reason:
+          type: string
+          maxLength: 500
+
+  - name: register-webhook
+    type: DB-Postgres
+    tenant: CRM
+    credentialname: crm-db
+    restmethod: POST
+    path: /api/v1/crm/webhooks
+    script: |
+      INSERT INTO webhooks (url, events, secret, active, created_by)
+      VALUES ($1, $2, $3, true, $4)
+      RETURNING id, url, events, active, created_at;
+    validations:
+      type: object
+      required: [url, events]
+      properties:
+        url:
+          type: string
+          format: uri
+        events:
+          type: array
+          items:
+            type: string
+            enum: [lead_created, stage_changed, lead_qualified, deal_closed]
+          minItems: 1
+        secret:
+          type: string
+          minLength: 16
+
+  - name: webhook-dispatcher
+    type: IOT-Kafka
+    tenant: CRM
+    credentialname: crm-kafka
+    restmethod: POST
+    path: /api/v1/crm/webhooks/dispatch
+    topic: crm.webhooks.outbound
+    consumer_group: crm-webhook-dispatcher
+    script: |
+      const webhooks = await db.query(
+        "SELECT * FROM webhooks WHERE active = true AND $1 = ANY(events)",
+        [context.event_type]
+      );
+      for (const wh of webhooks.rows) {
+        const payload = { event: context.event_type, data: context.payload, timestamp: new Date().toISOString() };
+        const signature = hmacSha256(wh.secret, JSON.stringify(payload));
+        await http.post(wh.url, payload, { headers: { 'X-CRM-Signature': signature } });
+      }
+
+  - name: get-lead
+    type: DB-Postgres
+    tenant: CRM
+    credentialname: crm-db
+    restmethod: GET
+    path: /api/v1/crm/leads/{lead_id}
+    script: |
+      SELECT l.*, u.display_name AS owner_name,
+             (SELECT json_agg(h ORDER BY h.changed_at DESC)
+              FROM pipeline_history h WHERE h.lead_id = l.id) AS history
+      FROM leads l
+      LEFT JOIN users u ON l.owner_id = u.id
+      WHERE l.id = $1;
+
+Keys:
+  configmap: crm-pipeline-keys
+Scripts:
+  configmap: crm-pipeline-scripts
+Type: Job
+DatatruckerConfig: crm-pipeline-config
+Replicas: 2
+
+API:
+  name: crm-api
+  Image:
+    repository: registry.gitlab.com/datatruckerio
+    imageName: datatrucker-server/datatrucker-api
+    tagName: latest

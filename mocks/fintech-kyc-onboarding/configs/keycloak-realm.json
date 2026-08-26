@@ -1,0 +1,62 @@
+{
+  "realm": "FinTech-KYC",
+  "enabled": true,
+  "sslRequired": "external",
+  "registrationAllowed": false,
+  "loginWithEmailAllowed": true,
+  "bruteForceProtected": true,
+  "roles": {
+    "realm": [
+      { "name": "compliance-officer", "description": "Review and approve KYC decisions" },
+      { "name": "onboarding-agent", "description": "Initiate and manage applicant workflows" },
+      { "name": "auditor", "description": "Read-only access to KYC audit trails" },
+      { "name": "sanctions-service", "description": "Service account for sanctions screening" }
+    ]
+  },
+  "clients": [
+    {
+      "clientId": "fintech-kyc-api",
+      "enabled": true,
+      "publicClient": false,
+      "secret": "fintech-kyc-secret-change-me",
+      "directAccessGrantsEnabled": true,
+      "serviceAccountsEnabled": true,
+      "redirectUris": ["*"],
+      "webOrigins": ["*"]
+    },
+    {
+      "clientId": "fintech-portal",
+      "enabled": true,
+      "publicClient": true,
+      "directAccessGrantsEnabled": true,
+      "redirectUris": ["http://localhost:9080/*"],
+      "webOrigins": ["*"]
+    }
+  ],
+  "users": [
+    {
+      "username": "compliance-officer",
+      "enabled": true,
+      "emailVerified": true,
+      "email": "compliance@datatrucker.io",
+      "credentials": [{ "type": "password", "value": "compliance-pass", "temporary": false }],
+      "realmRoles": ["compliance-officer"]
+    },
+    {
+      "username": "onboarding-agent",
+      "enabled": true,
+      "emailVerified": true,
+      "email": "onboarding@datatrucker.io",
+      "credentials": [{ "type": "password", "value": "onboarding-pass", "temporary": false }],
+      "realmRoles": ["onboarding-agent"]
+    },
+    {
+      "username": "auditor",
+      "enabled": true,
+      "emailVerified": true,
+      "email": "auditor@datatrucker.io",
+      "credentials": [{ "type": "password", "value": "auditor-pass", "temporary": false }],
+      "realmRoles": ["auditor"]
+    }
+  ]
+}

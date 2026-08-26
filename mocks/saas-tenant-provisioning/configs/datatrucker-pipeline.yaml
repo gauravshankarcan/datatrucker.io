@@ -1,0 +1,90 @@
+# SaaS Tenant Provisioning — multi-tenant RBAC orchestration
+---
+Resources:
+  requests:
+    memory: "512Mi"
+    cpu: "500m"
+  limits:
+    memory: "1Gi"
+    cpu: "1000m"
+
+JobDefinitions:
+  - name: healthcheck
+    type: Util-Echo
+    tenant: Admin
+    restmethod: GET
+    path: /api/v1/statuschecks/healthcheck
+
+  - name: provision-tenant
+    type: Script-JS
+    tenant: SaaS-Platform
+    credentialname: saas-db
+    restmethod: POST
+    path: /api/v1/tenants/provision
+    script: |
+      const { org_name, plan, admin_email, domains } = context.body;
+      const tenantId = 'TNT-' + Date.now().toString(36).toUpperCase();
+      const schema = `tenant_${tenantId.toLowerCase().replace(/-/g, '_')}`;
+      await db.query(`CREATE SCHEMA IF NOT EXISTS ${schema}`);
+      const tenant = await db.query(
+        `INSERT INTO tenants (tenant_id, org_name, plan, schema_name, status, admin_email)
+         VALUES ($1,$2,$3,$4,'provisioning',$5) RETURNING *`,
+        [tenantId, org_name, plan, schema, admin_email]
+      );
+      await kafka.produce('saas.tenant.provision', { tenant_id: tenantId, plan, domains });
+      return { ...tenant.rows[0], provisioning_steps: ['schema', 'rbac', 'keycloak', 'dns'] };
+    validations:
+      type: object
+      required: [org_name, plan, admin_email]
+      properties:
+        org_name:
+          type: string
+          minLength: 2
+        plan:
+          type: string
+          enum: [starter, professional, enterprise]
+        admin_email:
+          type: string
+          format: email
+        domains:
+          type: array
+          items:
+            type: string
+
+  - name: configure-rbac
+    type: Script-JS
+    tenant: SaaS-Platform
+    credentialname: saas-db
+    restmethod: POST
+    path: /api/v1/tenants/{tenant_id}/rbac
+    script: |
+      const { tenant_id, roles } = context.body;
+      for (const role of roles) {
+        await db.query(
+          `INSERT INTO tenant_roles (tenant_id, role_name, permissions) VALUES ($1,$2,$3)
+           ON CONFLICT (tenant_id, role_name) DO UPDATE SET permissions = $3`,
+          [tenant_id, role.name, JSON.stringify(role.permissions)]
+        );
+      }
+      return { tenant_id, roles_configured: roles.length };
+    validations:
+      type: object
+      required: [tenant_id, roles]
+      properties:
+        tenant_id:
+          type: string
+        roles:
+          type: array
+          minItems: 1
+
+Keys:
+  configmap: saas-provisioning-keys
+Type: Job
+DatatruckerConfig: saas-provisioning-config
+Replicas: 2
+
+API:
+  Image:
+    repository: quay.io/datatrucker
+    imageName: datatrucker-api
+    tagName: latest

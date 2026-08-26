@@ -1,0 +1,63 @@
+---
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  name: datatruckermocks.datatrucker.datatrucker.io
+spec:
+  group: datatrucker.datatrucker.io
+  names:
+    kind: DatatruckerMock
+    listKind: DatatruckerMockList
+    plural: datatruckermocks
+    singular: datatruckermock
+    shortNames:
+    - dtmock
+  scope: Namespaced
+  versions:
+  - name: v1
+    served: true
+    storage: true
+    schema:
+      openAPIV3Schema:
+        description: DatatruckerMock deploys a mock use case as DatatruckerFlow and Config CRs.
+        type: object
+        properties:
+          apiVersion:
+            type: string
+          kind:
+            type: string
+          metadata:
+            type: object
+          spec:
+            type: object
+            required: [mockName, configRef, flow]
+            properties:
+              mockName:
+                type: string
+                enum:
+                - employee-management
+                - crm-pipeline
+                - voter-registration-system
+                - ecommerce-inventory-sync
+                - iot-telemetry-alerts
+                - fintech-kyc-onboarding
+                - healthcare-patient-portal
+                - saas-tenant-provisioning
+              configRef:
+                type: string
+              flow:
+                type: object
+                x-kubernetes-preserve-unknown-fields: true
+                description: DatatruckerFlow spec (JobDefinitions, Replicas, API, etc.)
+          status:
+            type: object
+            x-kubernetes-preserve-unknown-fields: true
+    subresources:
+      status: {}
+    additionalPrinterColumns:
+    - jsonPath: .spec.mockName
+      name: Mock
+      type: string
+    - jsonPath: .status.phase
+      name: Phase
+      type: string

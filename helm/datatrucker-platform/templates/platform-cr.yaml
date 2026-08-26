@@ -1,0 +1,114 @@
+# Platform DatatruckerConfig — all settings via CR spec, never mounted config files
+apiVersion: datatrucker.datatrucker.io/v1
+kind: DatatruckerConfig
+metadata:
+  name: {{ .Values.platform.configName }}
+  namespace: {{ .Values.namespace }}
+  labels:
+    app.kubernetes.io/name: datatrucker
+    app.kubernetes.io/component: config
+spec:
+  TempDB:
+    enabled: false
+  DB:
+    user: {{ .Values.postgres.user }}
+    password: {{ .Values.postgres.password }}
+    databasename: {{ .Values.postgres.database }}
+    hostname: postgres
+    type: pg
+    port: 5432
+  API:
+    name: platform-api
+    crypto:
+      passwordHash:
+        Algorithm: sha256
+        SaltLength: 16
+      JWT:
+        signOptions:
+          expiresIn: 60m
+          algorithm: RS256
+          issuer: datatrucker
+        verify:
+          issuer: datatrucker
+        authorization_keys:
+          public_key: publicJWT.key
+          private_key: privateJWT.key
+      keycloak:
+        realm: DataTrucker
+        client_id: datatrucker-api
+        url: http://keycloak:8080
+        client_secret: datatrucker-secret
+        jwt_publickey_verifier: keycloak.key
+    jobsServer:
+      keycloak: false
+    resource:
+      Templates:
+        Scripts: scripts
+        Shell: shell
+        resourcedefinitions: resourcedefinitions
+        keys: keys
+      Cache:
+        Resource: false
+        Creds: false
+        ResourceFlush: 10
+        CredsFlush: 10
+---
+# Platform DatatruckerFlow — JobDefinitions inline in CR
+apiVersion: datatrucker.datatrucker.io/v1
+kind: DatatruckerFlow
+metadata:
+  name: {{ .Values.platform.flowName }}
+  namespace: {{ .Values.namespace }}
+  labels:
+    app.kubernetes.io/name: datatrucker
+    app.kubernetes.io/component: flow
+spec:
+  Type: Job
+  Replicas: {{ .Values.platform.replicas }}
+  DatatruckerConfig: {{ .Values.platform.configName }}
+  Resources:
+    requests:
+      memory: 256Mi
+      cpu: 250m
+    limits:
+      memory: 512Mi
+      cpu: 500m
+  JobDefinitions:
+    - name: healthcheck
+      type: Util-Echo
+      tenant: Admin
+      restmethod: GET
+    - name: echo-test
+      type: Util-Echo
+      tenant: Admin
+      restmethod: POST
+      validations:
+        type: object
+        properties:
+          message:
+            type: string
+  Keys:
+    configmap: placeholder
+  Scripts:
+    configmap: placeholder
+  API:
+    name: api
+    Image:
+      repository: {{ .Values.imageRegistry }}
+      imageName: {{ .Values.images.api }}
+      imageNameUI: {{ .Values.images.ui }}
+      tagName: {{ .Values.imageTag | quote }}
+---
+{{- if .Values.init.enabled }}
+apiVersion: datatrucker.datatrucker.io/v1
+kind: DatatruckerInit
+metadata:
+  name: platform-init
+  namespace: {{ .Values.namespace }}
+spec:
+  configRef: {{ .Values.platform.configName }}
+  adminUsername: {{ .Values.init.adminUsername }}
+  adminEmail: {{ .Values.init.adminEmail }}
+  adminPassword: {{ .Values.init.adminPassword }}
+  initializeDb: true
+{{- end }}

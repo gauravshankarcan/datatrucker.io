@@ -1,0 +1,105 @@
+{
+  "realm": "EmployeeManagement",
+  "enabled": true,
+  "displayName": "Employee Management Platform",
+  "sslRequired": "external",
+  "registrationAllowed": false,
+  "loginWithEmailAllowed": true,
+  "duplicateEmailsAllowed": false,
+  "resetPasswordAllowed": true,
+  "editUsernameAllowed": false,
+  "bruteForceProtected": true,
+  "failureFactor": 5,
+  "roles": {
+    "realm": [
+      { "name": "hr-admin", "description": "Full HR administration: create, update, delete employees and assign departments" },
+      { "name": "hr-viewer", "description": "Read-only access to employee and department records" },
+      { "name": "hr-manager", "description": "Manage direct reports and request department transfers" },
+      { "name": "compliance-auditor", "description": "Export audit logs and view terminated employee records" }
+    ],
+    "client": {
+      "employee-api": [
+        { "name": "employees:read", "description": "Read employee records" },
+        { "name": "employees:write", "description": "Create and update employee records" },
+        { "name": "employees:delete", "description": "Soft-delete employee records" },
+        { "name": "departments:read", "description": "List departments and headcount" },
+        { "name": "departments:assign", "description": "Assign employees to departments" },
+        { "name": "audit:export", "description": "Export compliance audit logs via SFTP" }
+      ]
+    }
+  },
+  "clients": [
+    {
+      "clientId": "employee-api",
+      "name": "Employee Management API",
+      "enabled": true,
+      "publicClient": false,
+      "secret": "employee-api-secret-change-in-prod",
+      "directAccessGrantsEnabled": true,
+      "serviceAccountsEnabled": true,
+      "authorizationServicesEnabled": true,
+      "redirectUris": ["http://localhost:8080/*", "http://localhost:9080/*"],
+      "webOrigins": ["http://localhost:8080", "http://localhost:9080"],
+      "defaultClientScopes": ["profile", "email", "roles"]
+    },
+    {
+      "clientId": "employee-portal",
+      "name": "Employee Self-Service Portal",
+      "enabled": true,
+      "publicClient": true,
+      "directAccessGrantsEnabled": true,
+      "redirectUris": ["http://localhost:9080/*"],
+      "webOrigins": ["http://localhost:9080"]
+    }
+  ],
+  "users": [
+    {
+      "username": "hr.admin",
+      "enabled": true,
+      "emailVerified": true,
+      "firstName": "Helen",
+      "lastName": "Rodriguez",
+      "email": "hr.admin@acmecorp.example",
+      "credentials": [{ "type": "password", "value": "HrAdmin123!", "temporary": false }],
+      "realmRoles": ["hr-admin"],
+      "clientRoles": {
+        "employee-api": ["employees:read", "employees:write", "employees:delete", "departments:read", "departments:assign", "audit:export"]
+      }
+    },
+    {
+      "username": "hr.viewer",
+      "enabled": true,
+      "emailVerified": true,
+      "firstName": "Victor",
+      "lastName": "Chen",
+      "email": "hr.viewer@acmecorp.example",
+      "credentials": [{ "type": "password", "value": "HrViewer123!", "temporary": false }],
+      "realmRoles": ["hr-viewer"],
+      "clientRoles": {
+        "employee-api": ["employees:read", "departments:read"]
+      }
+    },
+    {
+      "username": "unauthorized.user",
+      "enabled": true,
+      "emailVerified": true,
+      "firstName": "Guest",
+      "lastName": "User",
+      "email": "guest@acmecorp.example",
+      "credentials": [{ "type": "password", "value": "Guest123!", "temporary": false }],
+      "realmRoles": []
+    }
+  ],
+  "groups": [
+    {
+      "name": "Engineering",
+      "path": "/Engineering",
+      "realmRoles": ["hr-viewer"]
+    },
+    {
+      "name": "Human Resources",
+      "path": "/Human Resources",
+      "realmRoles": ["hr-admin", "hr-viewer"]
+    }
+  ]
+}

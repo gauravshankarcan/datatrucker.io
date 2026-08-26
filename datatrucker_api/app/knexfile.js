@@ -25,11 +25,11 @@ if (secretsproperties.type === 'oracledb') {
       };
 } else {
       knexconnect = {
-            host: secretsproperties.host,
-            user: secretsproperties.username,
-            password: secretsproperties.password,
-            database: secretsproperties.database,
-            port: secretsproperties.port
+            host: process.env.DB_HOST || secretsproperties.host,
+            user: process.env.DB_USER || secretsproperties.username,
+            password: process.env.DB_PASSWORD || secretsproperties.password,
+            database: process.env.DB_NAME || secretsproperties.database,
+            port: parseInt(process.env.DB_PORT || secretsproperties.port, 10)
       };
 }
 

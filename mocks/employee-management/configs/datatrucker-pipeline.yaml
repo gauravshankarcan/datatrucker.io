@@ -1,0 +1,290 @@
+# Employee Management Platform — DataTrucker JobDefinitions
+# Enterprise HR CRUD with department assignment and Keycloak RBAC enforcement
+---
+Resources:
+  requests:
+    memory: "512Mi"
+    cpu: "500m"
+  limits:
+    memory: "1Gi"
+    cpu: "1000m"
+
+JobDefinitions:
+  # ── Health & Auth ──────────────────────────────────────────────────────────
+  - name: healthcheck
+    type: Util-Echo
+    tenant: Admin
+    restmethod: GET
+    path: /api/v1/statuschecks/healthcheck
+    validations:
+      type: object
+      properties: {}
+
+  - name: auth-token-introspect
+    type: Script-JS
+    tenant: Admin
+    restmethod: POST
+    path: /api/v1/employees/auth/introspect
+    script: |
+      const roles = context.claims?.realm_access?.roles || [];
+      return {
+        valid: true,
+        roles,
+        canRead: roles.includes('hr-viewer') || roles.includes('hr-admin'),
+        canWrite: roles.includes('hr-admin'),
+        canDelete: roles.includes('hr-admin')
+      };
+    validations:
+      type: object
+      required: [access_token]
+      properties:
+        access_token:
+          type: string
+          minLength: 10
+
+  # ── Employee CRUD ──────────────────────────────────────────────────────────
+  - name: list-employees
+    type: DB-Postgres
+    tenant: HR
+    credentialname: hr-db
+    restmethod: GET
+    path: /api/v1/employees
+    script: |
+      SELECT e.id, e.employee_number, e.first_name, e.last_name, e.email,
+             e.status, d.code AS department_code, d.name AS department_name,
+             e.hire_date, e.updated_at
+      FROM employees e
+      LEFT JOIN departments d ON e.department_id = d.id
+      WHERE ($1::text IS NULL OR e.status = $1)
+        AND ($2::uuid IS NULL OR e.department_id = $2)
+      ORDER BY e.last_name, e.first_name
+      LIMIT COALESCE($3::int, 50) OFFSET COALESCE($4::int, 0);
+    validations:
+      type: object
+      properties:
+        status:
+          type: string
+          enum: [active, inactive, terminated, on_leave]
+        department_id:
+          type: string
+          format: uuid
+        limit:
+          type: integer
+          minimum: 1
+          maximum: 200
+        offset:
+          type: integer
+          minimum: 0
+
+  - name: get-employee
+    type: DB-Postgres
+    tenant: HR
+    credentialname: hr-db
+    restmethod: GET
+    path: /api/v1/employees/{employee_id}
+    script: |
+      SELECT e.*, d.code AS department_code, d.name AS department_name,
+             m.first_name || ' ' || m.last_name AS manager_name
+      FROM employees e
+      LEFT JOIN departments d ON e.department_id = d.id
+      LEFT JOIN employees m ON e.manager_id = m.id
+      WHERE e.id = $1 AND e.deleted_at IS NULL;
+    validations:
+      type: object
+      required: [employee_id]
+      properties:
+        employee_id:
+          type: string
+          format: uuid
+
+  - name: create-employee
+    type: Script-JS
+    tenant: HR
+    credentialname: hr-db
+    restmethod: POST
+    path: /api/v1/employees
+    script: |
+      const { first_name, last_name, email, department_id, hire_date, job_title } = context.body;
+      const empNum = 'EMP-' + Date.now().toString(36).toUpperCase();
+      const result = await db.query(
+        `INSERT INTO employees (employee_number, first_name, last_name, email,
+         department_id, hire_date, job_title, status, created_by)
+         VALUES ($1,$2,$3,$4,$5,$6,$7,'active',$8) RETURNING *`,
+        [empNum, first_name, last_name, email, department_id, hire_date, job_title, context.user.sub]
+      );
+      await redis.publish('hr.events', JSON.stringify({ event: 'employee.created', id: result.rows[0].id }));
+      return result.rows[0];
+    validations:
+      type: object
+      required: [first_name, last_name, email, department_id, hire_date]
+      properties:
+        first_name:
+          type: string
+          minLength: 1
+          maxLength: 100
+        last_name:
+          type: string
+          minLength: 1
+          maxLength: 100
+        email:
+          type: string
+          format: email
+        department_id:
+          type: string
+          format: uuid
+        hire_date:
+          type: string
+          format: date
+        job_title:
+          type: string
+          maxLength: 150
+        manager_id:
+          type: string
+          format: uuid
+
+  - name: update-employee
+    type: DB-Postgres
+    tenant: HR
+    credentialname: hr-db
+    restmethod: PUT
+    path: /api/v1/employees/{employee_id}
+    script: |
+      UPDATE employees SET
+        first_name = COALESCE($2, first_name),
+        last_name = COALESCE($3, last_name),
+        email = COALESCE($4, email),
+        job_title = COALESCE($5, job_title),
+        status = COALESCE($6, status),
+        updated_at = NOW(),
+        updated_by = $7
+      WHERE id = $1 AND deleted_at IS NULL
+      RETURNING *;
+    validations:
+      type: object
+      required: [employee_id]
+      properties:
+        employee_id:
+          type: string
+          format: uuid
+        first_name:
+          type: string
+        last_name:
+          type: string
+        email:
+          type: string
+          format: email
+        job_title:
+          type: string
+        status:
+          type: string
+          enum: [active, inactive, terminated, on_leave]
+
+  - name: delete-employee
+    type: DB-Postgres
+    tenant: HR
+    credentialname: hr-db
+    restmethod: DELETE
+    path: /api/v1/employees/{employee_id}
+    script: |
+      UPDATE employees SET deleted_at = NOW(), status = 'terminated', updated_by = $2
+      WHERE id = $1 AND deleted_at IS NULL RETURNING id, employee_number, status;
+    validations:
+      type: object
+      required: [employee_id]
+      properties:
+        employee_id:
+          type: string
+          format: uuid
+
+  # ── Department Assignment ────────────────────────────────────────────────────
+  - name: list-departments
+    type: DB-Postgres
+    tenant: HR
+    credentialname: hr-db
+    restmethod: GET
+    path: /api/v1/departments
+    script: |
+      SELECT d.id, d.code, d.name, d.cost_center,
+             COUNT(e.id) FILTER (WHERE e.status = 'active') AS headcount
+      FROM departments d
+      LEFT JOIN employees e ON e.department_id = d.id
+      GROUP BY d.id ORDER BY d.name;
+
+  - name: assign-department
+    type: Script-JS
+    tenant: HR
+    credentialname: hr-db
+    restmethod: POST
+    path: /api/v1/employees/{employee_id}/department
+    script: |
+      const { employee_id, department_id, effective_date, reason } = context.body;
+      const lockKey = `hr:assign:${employee_id}`;
+      const acquired = await redis.set(lockKey, '1', 'NX', 'EX', 30);
+      if (!acquired) throw new Error('Assignment in progress for this employee');
+      try {
+        const hist = await db.query(
+          `INSERT INTO department_assignments (employee_id, department_id, effective_date, reason, assigned_by)
+           VALUES ($1,$2,$3,$4,$5) RETURNING *`,
+          [employee_id, department_id, effective_date || new Date(), reason, context.user.sub]
+        );
+        await db.query(
+          `UPDATE employees SET department_id = $1, updated_at = NOW() WHERE id = $2`,
+          [department_id, employee_id]
+        );
+        return hist.rows[0];
+      } finally {
+        await redis.del(lockKey);
+      }
+    validations:
+      type: object
+      required: [employee_id, department_id]
+      properties:
+        employee_id:
+          type: string
+          format: uuid
+        department_id:
+          type: string
+          format: uuid
+        effective_date:
+          type: string
+          format: date
+        reason:
+          type: string
+          maxLength: 500
+
+  # ── RBAC Audit ───────────────────────────────────────────────────────────────
+  - name: audit-log-export
+    type: File-SFTP
+    tenant: HR
+    credentialname: sftp-compliance
+    restmethod: POST
+    path: /api/v1/employees/audit/export
+    script: |
+      COPY (SELECT * FROM employee_audit_log WHERE created_at >= $1 AND created_at <= $2)
+      TO STDOUT WITH CSV HEADER;
+    validations:
+      type: object
+      required: [start_date, end_date]
+      properties:
+        start_date:
+          type: string
+          format: date-time
+        end_date:
+          type: string
+          format: date-time
+
+Keys:
+  configmap: employee-management-keys
+Scripts:
+  configmap: employee-management-scripts
+Type: Job
+DatatruckerConfig: employee-management-config
+Replicas: 2
+
+API:
+  name: employee-api
+  Image:
+    repository: registry.gitlab.com/datatruckerio
+    imageName: datatrucker-server/datatrucker-api
+    imageNameUI: datatruckerio/datatrucker-ui
+    tagName: latest

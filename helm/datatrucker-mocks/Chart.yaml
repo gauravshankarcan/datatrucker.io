@@ -1,0 +1,9 @@
+apiVersion: v2
+name: datatrucker-mocks
+description: DataTrucker mock use cases as DatatruckerMock CRs (no config mounts)
+type: application
+version: 2.1.0
+appVersion: "2.1.0"
+maintainers:
+  - name: Gaurav Shankar
+    email: gauravshankar.can@gmail.com

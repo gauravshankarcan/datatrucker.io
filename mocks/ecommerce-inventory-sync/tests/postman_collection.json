@@ -1,0 +1,44 @@
+{
+  "info": {
+    "name": "Ecommerce Inventory API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:8080" },
+    { "key": "keycloakUrl", "value": "http://localhost:8081" },
+    { "key": "token", "value": "" }
+  ],
+  "item": [
+    {
+      "name": "Health Check",
+      "event": [{ "listen": "test", "script": { "exec": [
+        "pm.test('status 200', () => pm.response.to.have.status(200));",
+        "pm.test('reqCompleted', () => pm.expect(pm.response.json().reqCompleted).to.eql(true));"
+      ], "type": "text/javascript" }}],
+      "request": { "method": "GET", "url": "{{baseUrl}}/api/v1/statuschecks/healthcheck" }
+    },
+    {
+      "name": "Unauthorized Access",
+      "event": [{ "listen": "test", "script": { "exec": [
+        "pm.test('rejects unauthorized', () => pm.expect(pm.response.code).to.be.oneOf([401, 403, 404]));"
+      ], "type": "text/javascript" }}],
+      "request": {
+        "method": "GET",
+        "header": [{ "key": "Authorization", "value": "Bearer invalid-token" }],
+        "url": "{{baseUrl}}/api/v1/jobs"
+      }
+    },
+    {
+      "name": "Malformed Payload",
+      "event": [{ "listen": "test", "script": { "exec": [
+        "pm.test('rejects malformed', () => pm.expect(pm.response.code).to.be.oneOf([400, 422, 404]));"
+      ], "type": "text/javascript" }}],
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": { "mode": "raw", "raw": "{invalid json" },
+        "url": "{{baseUrl}}/api/v1/jobs"
+      }
+    }
+  ]
+}

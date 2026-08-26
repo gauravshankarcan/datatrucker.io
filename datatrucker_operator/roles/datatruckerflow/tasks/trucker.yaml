@@ -37,7 +37,7 @@
   with_items: "{{JobDefinitions}} "
 
 - name: create a jobs-config
-  community.kubernetes.k8s:
+  kubernetes.core.k8s:
     state: present
     definition: 
       apiVersion: v1
@@ -50,7 +50,7 @@
 
 
 - name: create a jobs deployment
-  community.kubernetes.k8s:
+  kubernetes.core.k8s:
     state: present
     definition:
         kind: Deployment
@@ -152,7 +152,8 @@
           cleanup: trucker
       spec:
         ports:
-        - protocol: TCP
+        - name: http
+          protocol: TCP
           port: 80
           targetPort: 8080
         selector:
@@ -163,7 +164,7 @@
 
 
 - name: create a service
-  community.kubernetes.k8s:
+  kubernetes.core.k8s:
     state: present
     definition: "{{ JOBSERVICEENTRY | from_yaml }}"
  

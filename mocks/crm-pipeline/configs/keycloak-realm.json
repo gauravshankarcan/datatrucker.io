@@ -1,0 +1,72 @@
+{
+  "realm": "CRMPipeline",
+  "enabled": true,
+  "displayName": "CRM Pipeline Platform",
+  "sslRequired": "external",
+  "registrationAllowed": false,
+  "loginWithEmailAllowed": true,
+  "duplicateEmailsAllowed": false,
+  "resetPasswordAllowed": true,
+  "bruteForceProtected": true,
+  "roles": {
+    "realm": [
+      { "name": "sales-admin", "description": "Full CRM administration and webhook management" },
+      { "name": "sales-rep", "description": "Manage assigned leads and advance pipeline stages" },
+      { "name": "sales-manager", "description": "View full pipeline analytics and reassign leads" },
+      { "name": "integration-service", "description": "Service account for webhook and Kafka consumers" }
+    ]
+  },
+  "clients": [
+    {
+      "clientId": "crm-api",
+      "name": "CRM Pipeline API",
+      "enabled": true,
+      "publicClient": false,
+      "secret": "crm-api-secret-change-in-prod",
+      "directAccessGrantsEnabled": true,
+      "serviceAccountsEnabled": true,
+      "redirectUris": ["http://localhost:8080/*"],
+      "webOrigins": ["http://localhost:8080"]
+    },
+    {
+      "clientId": "crm-webhook-receiver",
+      "name": "External Webhook Test Receiver",
+      "enabled": true,
+      "publicClient": true,
+      "directAccessGrantsEnabled": false,
+      "serviceAccountsEnabled": false
+    }
+  ],
+  "users": [
+    {
+      "username": "sales.admin",
+      "enabled": true,
+      "emailVerified": true,
+      "firstName": "Sarah",
+      "lastName": "Mitchell",
+      "email": "sales.admin@crmco.example",
+      "credentials": [{ "type": "password", "value": "SalesAdmin123!", "temporary": false }],
+      "realmRoles": ["sales-admin"]
+    },
+    {
+      "username": "sales.rep",
+      "enabled": true,
+      "emailVerified": true,
+      "firstName": "Ryan",
+      "lastName": "Park",
+      "email": "sales.rep@crmco.example",
+      "credentials": [{ "type": "password", "value": "SalesRep123!", "temporary": false }],
+      "realmRoles": ["sales-rep"]
+    },
+    {
+      "username": "readonly.user",
+      "enabled": true,
+      "emailVerified": true,
+      "firstName": "Read",
+      "lastName": "Only",
+      "email": "readonly@crmco.example",
+      "credentials": [{ "type": "password", "value": "ReadOnly123!", "temporary": false }],
+      "realmRoles": []
+    }
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "realm": "HealthcarePortal",
+  "enabled": true,
+  "roles": { "realm": [
+    { "name": "clinical-admin" },
+    { "name": "physician" },
+    { "name": "compliance-officer" }
+  ]},
+  "clients": [{
+    "clientId": "healthcare-api",
+    "enabled": true,
+    "secret": "healthcare-api-secret",
+    "directAccessGrantsEnabled": true
+  }]
+}

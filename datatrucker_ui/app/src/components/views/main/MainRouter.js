@@ -22,6 +22,8 @@ import Login from './login/login';
 import Register from './login/register';
 import Pages from './pages';
 import Landing from './landing/Landing';
+import WorkflowBuilder from '../../workflow/WorkflowBuilder';
+import AdminPortal from '../../admin/AdminPortal';
 
 export default class MainRouter extends Component {
       render() {
@@ -63,6 +65,8 @@ export default class MainRouter extends Component {
                                     <Route exact path="/chains" element={ <Pages exact path="/chains"/> }></Route>
                                     <Route exact path="/block" element={ <Pages exact path="/block"/> }></Route>
                                     <Route exact path="/iot/proxy" element={ <Pages exact path="/iot/proxy"/> }></Route>
+                                    <Route exact path="/workflow-builder" element={ <WorkflowBuilder /> }></Route>
+                                    <Route exact path="/admin" element={ <AdminPortal /> }></Route>
                                     <Route exact path="/home" element={ <Landing /> }></Route>
                                     <Route exact path="/" element={ <Landing /> }></Route>
                       </Routes>  
