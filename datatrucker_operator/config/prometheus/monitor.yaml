@@ -19,7 +19,10 @@ apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
   labels:
-    control-plane: controller-manager
+    app.kubernetes.io/name: datatrucker-operator
+    app.kubernetes.io/instance: controller-manager
+    app.kubernetes.io/component: controller-manager-servicemonitor
+    app.kubernetes.io/managed-by: olm
   name: controller-manager-metrics-monitor
   namespace: system
 spec:
@@ -28,4 +31,4 @@ spec:
       port: https
   selector:
     matchLabels:
-      control-plane: controller-manager
+      app.kubernetes.io/name: datatrucker-operator
