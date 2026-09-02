@@ -45,4 +45,4 @@ http://localhost:8080/api/v1
 
 ## Builder
 
-Gaurav Shankar <gauravshankar.can@gmail.com>
+Gaurav Shankar

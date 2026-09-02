@@ -1,6 +1,6 @@
 /*
  * Admin Portal — environment configs, secrets, connections, RBAC, deployment
- * Builder: Gaurav Shankar <gauravshankar.can@gmail.com>
+ * Gaurav Shankar
  */
 import React, { useState } from 'react';
 import {

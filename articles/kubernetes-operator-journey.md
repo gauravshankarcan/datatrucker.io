@@ -1,6 +1,6 @@
 # From Manual Deployments to Operator-Driven Lifecycle: The DataTrucker Kubernetes Journey
 
-*By Gaurav Shankar — Principal Software Engineer, DataTrucker.IO*
+*Gaurav Shankar*
 
 ## The Challenge
 
@@ -122,4 +122,4 @@ The operator transforms DataTrucker from a manual deployment exercise into a one
 
 ---
 
-*Gaurav Shankar is the builder of DataTrucker.IO. Connect on LinkedIn or email gauravshankar.can@gmail.com.*
+

@@ -1,7 +1,7 @@
 # DataTrucker.IO System Overview
 
 **Version:** 2.1.0  
-**Builder:** Gaurav Shankar <gauravshankar.can@gmail.com>  
+Gaurav Shankar  
 **License:** Apache 2.0
 
 ## Executive Summary

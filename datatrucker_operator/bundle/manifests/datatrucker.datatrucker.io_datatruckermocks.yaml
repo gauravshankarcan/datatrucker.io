@@ -1,0 +1,74 @@
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  creationTimestamp: null
+  name: datatruckermocks.datatrucker.datatrucker.io
+spec:
+  group: datatrucker.datatrucker.io
+  names:
+    kind: DatatruckerMock
+    listKind: DatatruckerMockList
+    plural: datatruckermocks
+    shortNames:
+    - dtmock
+    singular: datatruckermock
+  scope: Namespaced
+  versions:
+  - additionalPrinterColumns:
+    - jsonPath: .spec.mockName
+      name: Mock
+      type: string
+    - jsonPath: .status.phase
+      name: Phase
+      type: string
+    name: v1
+    schema:
+      openAPIV3Schema:
+        description: DatatruckerMock deploys a mock use case as DatatruckerFlow and
+          Config CRs.
+        properties:
+          apiVersion:
+            type: string
+          kind:
+            type: string
+          metadata:
+            type: object
+          spec:
+            properties:
+              configRef:
+                type: string
+              flow:
+                description: DatatruckerFlow spec (JobDefinitions, Replicas, API,
+                  etc.)
+                type: object
+                x-kubernetes-preserve-unknown-fields: true
+              mockName:
+                enum:
+                - employee-management
+                - crm-pipeline
+                - voter-registration-system
+                - ecommerce-inventory-sync
+                - iot-telemetry-alerts
+                - fintech-kyc-onboarding
+                - healthcare-patient-portal
+                - saas-tenant-provisioning
+                type: string
+            required:
+            - mockName
+            - configRef
+            - flow
+            type: object
+          status:
+            type: object
+            x-kubernetes-preserve-unknown-fields: true
+        type: object
+    served: true
+    storage: true
+    subresources:
+      status: {}
+status:
+  acceptedNames:
+    kind: ""
+    plural: ""
+  conditions: null
+  storedVersions: null

@@ -129,8 +129,7 @@ spec:
   - name: Git Repo
     url: https://gitlab.com/datatruckerio/datatrucker-server.git
   maintainers:
-  - email: gauravshankar.can@gmail.com
-    name: Gaurav Shankar
+  - name: Gaurav Shankar
   maturity: alpha
   provider:
     name: DataTrucker.IO

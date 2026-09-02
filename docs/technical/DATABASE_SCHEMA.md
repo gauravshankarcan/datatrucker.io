@@ -45,4 +45,4 @@ knex migrate:latest --env production
 
 ## Builder
 
-Gaurav Shankar <gauravshankar.can@gmail.com>
+Gaurav Shankar

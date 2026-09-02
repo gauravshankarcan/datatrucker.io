@@ -1,0 +1,68 @@
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  creationTimestamp: null
+  name: datatruckerinits.datatrucker.datatrucker.io
+spec:
+  group: datatrucker.datatrucker.io
+  names:
+    kind: DatatruckerInit
+    listKind: DatatruckerInitList
+    plural: datatruckerinits
+    shortNames:
+    - dtinit
+    singular: datatruckerinit
+  scope: Namespaced
+  versions:
+  - additionalPrinterColumns:
+    - jsonPath: .spec.configRef
+      name: Config
+      type: string
+    - jsonPath: .status.phase
+      name: Phase
+      type: string
+    name: v1
+    schema:
+      openAPIV3Schema:
+        description: DatatruckerInit bootstraps admin user and platform initialization
+          via CR.
+        properties:
+          apiVersion:
+            type: string
+          kind:
+            type: string
+          metadata:
+            type: object
+          spec:
+            properties:
+              adminEmail:
+                type: string
+              adminPassword:
+                type: string
+              adminUsername:
+                type: string
+              configRef:
+                description: Name of DatatruckerConfig to bind
+                type: string
+              initializeDb:
+                default: true
+                type: boolean
+            required:
+            - configRef
+            - adminUsername
+            - adminPassword
+            type: object
+          status:
+            type: object
+            x-kubernetes-preserve-unknown-fields: true
+        type: object
+    served: true
+    storage: true
+    subresources:
+      status: {}
+status:
+  acceptedNames:
+    kind: ""
+    plural: ""
+  conditions: null
+  storedVersions: null

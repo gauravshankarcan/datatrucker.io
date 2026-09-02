@@ -1,6 +1,6 @@
 /*
  * DataTrucker Theme System — Light/Dark mode with modern palette
- * Builder: Gaurav Shankar <gauravshankar.can@gmail.com>
+ * Gaurav Shankar
  */
 import { createTheme } from '@material-ui/core/styles';
 

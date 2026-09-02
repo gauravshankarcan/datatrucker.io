@@ -24,4 +24,4 @@ export QUAY_TOKEN=<your-token>
 
 ## Builder
 
-Gaurav Shankar <gauravshankar.can@gmail.com>
+Gaurav Shankar

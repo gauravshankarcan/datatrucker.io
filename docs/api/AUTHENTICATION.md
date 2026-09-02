@@ -31,4 +31,4 @@ For local development without Keycloak, use local RS256 keys in `app/config/`.
 
 ## Builder
 
-Gaurav Shankar <gauravshankar.can@gmail.com>
+Gaurav Shankar

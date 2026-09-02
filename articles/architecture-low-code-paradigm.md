@@ -1,6 +1,6 @@
 # The Low-Code Paradigm Shift: How DataTrucker Reimagines API Development
 
-*By Gaurav Shankar — Principal Software Engineer, DataTrucker.IO*
+*Gaurav Shankar*
 
 ## The Problem Every Team Faces
 
@@ -84,4 +84,4 @@ The low-code paradigm isn't about eliminating developers — it's about elevatin
 
 ---
 
-*Gaurav Shankar is the builder of DataTrucker.IO. Connect on LinkedIn or email gauravshankar.can@gmail.com.*
+

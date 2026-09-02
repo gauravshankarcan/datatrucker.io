@@ -36,4 +36,4 @@ stringData:
 
 ## Builder
 
-Gaurav Shankar <gauravshankar.can@gmail.com>
+Gaurav Shankar

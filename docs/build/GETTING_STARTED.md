@@ -1,6 +1,6 @@
 # Getting Started with DataTrucker
 
-Builder: Gaurav Shankar <gauravshankar.can@gmail.com>
+Gaurav Shankar
 
 ## Overview
 

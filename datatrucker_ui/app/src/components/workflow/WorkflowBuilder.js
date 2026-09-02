@@ -1,6 +1,6 @@
 /*
  * Visual Workflow Builder — node-based pipeline canvas
- * Builder: Gaurav Shankar <gauravshankar.can@gmail.com>
+ * Gaurav Shankar
  */
 import React, { useState, useCallback } from 'react';
 import {

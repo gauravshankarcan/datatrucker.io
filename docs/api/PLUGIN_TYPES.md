@@ -2,7 +2,7 @@
 
 Every job `type` in a `DatatruckerFlow` CR `JobDefinitions` maps to a plugin. Configure jobs entirely in the CR — never via mounted config files.
 
-Builder: Gaurav Shankar <gauravshankar.can@gmail.com>
+Gaurav Shankar
 
 ## CR Example Structure
 

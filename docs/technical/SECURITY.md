@@ -32,4 +32,4 @@ cd datatrucker_ui/app && npm audit
 
 ## Builder
 
-Gaurav Shankar <gauravshankar.can@gmail.com>
+Gaurav Shankar

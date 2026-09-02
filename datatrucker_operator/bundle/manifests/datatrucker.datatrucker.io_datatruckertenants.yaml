@@ -1,0 +1,82 @@
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  creationTimestamp: null
+  name: datatruckertenants.datatrucker.datatrucker.io
+spec:
+  group: datatrucker.datatrucker.io
+  names:
+    kind: DatatruckerTenant
+    listKind: DatatruckerTenantList
+    plural: datatruckertenants
+    shortNames:
+    - dttenant
+    singular: datatruckertenant
+  scope: Namespaced
+  versions:
+  - additionalPrinterColumns:
+    - jsonPath: .spec.tenantId
+      name: Tenant
+      type: string
+    - jsonPath: .status.phase
+      name: Phase
+      type: string
+    name: v1
+    schema:
+      openAPIV3Schema:
+        description: DatatruckerTenant provisions a multi-tenant namespace with Config
+          and default Flow CRs.
+        properties:
+          apiVersion:
+            type: string
+          kind:
+            type: string
+          metadata:
+            type: object
+          spec:
+            properties:
+              adminEmail:
+                type: string
+              createNamespace:
+                default: false
+                type: boolean
+              orgName:
+                type: string
+              plan:
+                enum:
+                - starter
+                - professional
+                - enterprise
+                type: string
+              roles:
+                items:
+                  properties:
+                    name:
+                      type: string
+                    permissions:
+                      items:
+                        type: string
+                      type: array
+                  type: object
+                type: array
+              tenantId:
+                pattern: ^[a-z0-9-]+$
+                type: string
+            required:
+            - tenantId
+            - adminEmail
+            type: object
+          status:
+            type: object
+            x-kubernetes-preserve-unknown-fields: true
+        type: object
+    served: true
+    storage: true
+    subresources:
+      status: {}
+status:
+  acceptedNames:
+    kind: ""
+    plural: ""
+  conditions: null
+  storedVersions: null

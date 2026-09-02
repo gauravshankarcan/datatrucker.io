@@ -1,6 +1,6 @@
 /*
 * Copyright 2021 Datatrucker.io Inc , Ontario , Canada
-* Builder: Gaurav Shankar <gauravshankar.can@gmail.com>
+* Gaurav Shankar
 */
 import React, { Component } from 'react';
 import './App.css';

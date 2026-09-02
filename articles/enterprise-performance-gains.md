@@ -1,6 +1,6 @@
 # Enterprise Performance Gains with DataTrucker: Benchmarks and Architecture Decisions
 
-*By Gaurav Shankar — Principal Software Engineer, DataTrucker.IO*
+*Gaurav Shankar*
 
 ## Executive Summary
 
@@ -90,4 +90,4 @@ Performance isn't an afterthought in DataTrucker — it's a design constraint. E
 
 ---
 
-*Gaurav Shankar is the builder of DataTrucker.IO. Connect on LinkedIn or email gauravshankar.can@gmail.com.*
+

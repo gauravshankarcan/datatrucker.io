@@ -51,4 +51,4 @@ Enable in `server.config.json`:
 
 ## Builder
 
-Gaurav Shankar <gauravshankar.can@gmail.com>
+Gaurav Shankar

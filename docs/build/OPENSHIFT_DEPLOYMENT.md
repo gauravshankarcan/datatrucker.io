@@ -24,4 +24,4 @@ oc apply -f datatrucker_operator/config/samples/datatrucker_v1_datatruckerflow.y
 
 ## Builder
 
-Gaurav Shankar <gauravshankar.can@gmail.com>
+Gaurav Shankar

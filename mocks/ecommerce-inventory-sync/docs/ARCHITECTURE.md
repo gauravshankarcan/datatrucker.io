@@ -21,4 +21,4 @@ flowchart LR
 4. Results persisted and/or streamed to downstream systems
 
 ## Builder
-Gaurav Shankar <gauravshankar.can@gmail.com>
+Gaurav Shankar

@@ -32,4 +32,4 @@ curl http://localhost:8080/api/v1/statuschecks/healthcheck
 
 ## Builder
 
-Gaurav Shankar <gauravshankar.can@gmail.com>
+Gaurav Shankar
